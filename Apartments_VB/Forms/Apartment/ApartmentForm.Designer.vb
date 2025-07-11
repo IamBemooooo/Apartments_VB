@@ -41,12 +41,13 @@ Partial Class ApartmentForm
         Me.dgvApartments.Name = "dgvApartments"
         Me.dgvApartments.RowHeadersWidth = 51
         Me.dgvApartments.RowTemplate.Height = 24
-        Me.dgvApartments.Size = New System.Drawing.Size(821, 247)
+        Me.dgvApartments.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
+        Me.dgvApartments.Size = New System.Drawing.Size(1028, 291)
         Me.dgvApartments.TabIndex = 0
         '
         'btnAdd
         '
-        Me.btnAdd.Location = New System.Drawing.Point(15, 385)
+        Me.btnAdd.Location = New System.Drawing.Point(11, 447)
         Me.btnAdd.Name = "btnAdd"
         Me.btnAdd.Size = New System.Drawing.Size(111, 40)
         Me.btnAdd.TabIndex = 1
@@ -55,7 +56,7 @@ Partial Class ApartmentForm
         '
         'btnUpdate
         '
-        Me.btnUpdate.Location = New System.Drawing.Point(146, 385)
+        Me.btnUpdate.Location = New System.Drawing.Point(139, 447)
         Me.btnUpdate.Name = "btnUpdate"
         Me.btnUpdate.Size = New System.Drawing.Size(111, 40)
         Me.btnUpdate.TabIndex = 2
@@ -64,25 +65,25 @@ Partial Class ApartmentForm
         '
         'btnPrev
         '
-        Me.btnPrev.Location = New System.Drawing.Point(682, 413)
+        Me.btnPrev.Location = New System.Drawing.Point(839, 475)
         Me.btnPrev.Name = "btnPrev"
-        Me.btnPrev.Size = New System.Drawing.Size(73, 33)
+        Me.btnPrev.Size = New System.Drawing.Size(102, 33)
         Me.btnPrev.TabIndex = 3
         Me.btnPrev.Text = "Trước"
         Me.btnPrev.UseVisualStyleBackColor = True
         '
         'btnNext
         '
-        Me.btnNext.Location = New System.Drawing.Point(761, 413)
+        Me.btnNext.Location = New System.Drawing.Point(947, 475)
         Me.btnNext.Name = "btnNext"
-        Me.btnNext.Size = New System.Drawing.Size(73, 33)
+        Me.btnNext.Size = New System.Drawing.Size(94, 33)
         Me.btnNext.TabIndex = 4
         Me.btnNext.Text = "Sau"
         Me.btnNext.UseVisualStyleBackColor = True
         '
         'btnDelete
         '
-        Me.btnDelete.Location = New System.Drawing.Point(275, 385)
+        Me.btnDelete.Location = New System.Drawing.Point(271, 447)
         Me.btnDelete.Name = "btnDelete"
         Me.btnDelete.Size = New System.Drawing.Size(111, 40)
         Me.btnDelete.TabIndex = 5
@@ -91,33 +92,38 @@ Partial Class ApartmentForm
         '
         'btnSearch
         '
-        Me.btnSearch.Location = New System.Drawing.Point(689, 63)
+        Me.btnSearch.BackColor = System.Drawing.SystemColors.ActiveCaption
+        Me.btnSearch.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.8!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnSearch.ForeColor = System.Drawing.SystemColors.ButtonFace
+        Me.btnSearch.Location = New System.Drawing.Point(929, 68)
         Me.btnSearch.Name = "btnSearch"
-        Me.btnSearch.Size = New System.Drawing.Size(99, 28)
+        Me.btnSearch.Size = New System.Drawing.Size(112, 38)
         Me.btnSearch.TabIndex = 6
         Me.btnSearch.Text = "Tìm kiếm"
-        Me.btnSearch.UseVisualStyleBackColor = True
+        Me.btnSearch.UseVisualStyleBackColor = False
         '
         'txtSearch
         '
-        Me.txtSearch.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.8!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtSearch.Location = New System.Drawing.Point(513, 63)
+        Me.txtSearch.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtSearch.Location = New System.Drawing.Point(684, 71)
         Me.txtSearch.Name = "txtSearch"
-        Me.txtSearch.Size = New System.Drawing.Size(170, 28)
+        Me.txtSearch.Size = New System.Drawing.Size(239, 30)
         Me.txtSearch.TabIndex = 7
         '
         'lblPagingInfo
         '
-        Me.lblPagingInfo.Location = New System.Drawing.Point(682, 385)
+        Me.lblPagingInfo.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.8!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblPagingInfo.Location = New System.Drawing.Point(747, 441)
         Me.lblPagingInfo.Name = "lblPagingInfo"
-        Me.lblPagingInfo.Size = New System.Drawing.Size(152, 22)
+        Me.lblPagingInfo.ReadOnly = True
+        Me.lblPagingInfo.Size = New System.Drawing.Size(294, 28)
         Me.lblPagingInfo.TabIndex = 8
         '
         'ApartmentForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(846, 497)
+        Me.ClientSize = New System.Drawing.Size(1053, 528)
         Me.Controls.Add(Me.lblPagingInfo)
         Me.Controls.Add(Me.txtSearch)
         Me.Controls.Add(Me.btnSearch)

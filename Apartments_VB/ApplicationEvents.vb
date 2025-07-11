@@ -1,43 +1,48 @@
-﻿Imports Microsoft.Extensions.DependencyInjection
-Imports System.Configuration
+﻿Imports System.Configuration
 Imports System.Data.Odbc
-Imports System.Windows.Forms
 
 Namespace My
     Partial Friend Class MyApplication
 
         Private Sub MyApplication_Startup(sender As Object, e As ApplicationServices.StartupEventArgs) Handles Me.Startup
-            ' 1. Đọc chuỗi kết nối từ App.config
-            Dim connStr As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+            ' 1. Đọc chuỗi kết nối
+            Dim connSetting = ConfigurationManager.ConnectionStrings("DefaultConnection")
 
-            ' 2. Kiểm tra kết nối DB
+            If connSetting Is Nothing Then
+                MessageBox.Show("Không tìm thấy 'DefaultConnection' trong App.config!", "Lỗi cấu hình", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                End
+            End If
+
+            Dim connStr As String = connSetting.ConnectionString
+
+
             Try
                 Using conn As New OdbcConnection(connStr)
                     conn.Open()
-                    ' Nếu mở được thì OK, không làm gì
                     conn.Close()
                 End Using
             Catch ex As Exception
                 MessageBox.Show("Không thể kết nối đến cơ sở dữ liệu." & vbCrLf & ex.Message,
                                 "Lỗi kết nối", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                ' Thoát ứng dụng luôn nếu không kết nối được
                 End
             End Try
 
-            ' 3. Tạo DI container
-            Dim services As New ServiceCollection()
-            services.AddScoped(Of IUserRepository, UserRepository)()
-            services.AddScoped(Of IUserService, UserService)()
-            services.AddScoped(Of IApartmentRepository, ApartmentRepository)()
-            services.AddScoped(Of IApartmentService, ApartmentService)()
+            ' 2. Tạo và gán service
+            Dim userRepo As New UserRepository()
+            Dim userService As New UserService(userRepo)
 
-            services.AddScoped(Of LoginForm)()
+            Dim apartmentRepo As New ApartmentRepository()
+            Dim apartmentService As New ApartmentService(apartmentRepo)
 
-            ' 4. Build provider
-            Dim provider As IServiceProvider = services.BuildServiceProvider()
+            Dim typeRepo As New ApartmentTypeRepository()
+            Dim typeService As New ApartmentTypeService(typeRepo)
 
-            ' 5. Gán form khởi động
-            Me.MainForm = provider.GetService(Of LoginForm)()
+            ServiceProviderLocator.UserService = userService
+            ServiceProviderLocator.ApartmentService = apartmentService
+            ServiceProviderLocator.ApartmentTypeService = typeService
+
+            ' 3. Gán form khởi động
+            Me.MainForm = New LoginForm(userService)
         End Sub
 
     End Class

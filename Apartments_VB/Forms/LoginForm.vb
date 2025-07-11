@@ -15,27 +15,23 @@
             Dim username As String = txtUserName.Text.Trim()
             Dim password As String = txtPassword.Text
 
-            ' Kiểm tra đầu vào
             If String.IsNullOrEmpty(username) OrElse String.IsNullOrEmpty(password) Then
                 MessageBox.Show("Vui lòng nhập đầy đủ thông tin.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 Return
             End If
 
-            ' Gọi service để đăng nhập
             Dim user = _userService.Login(username, password)
 
             If user IsNot Nothing Then
                 MessageBox.Show("Đăng nhập thành công! Xin chào: " & user.FullName, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                ' Ẩn hoặc đóng LoginForm
+
+                ' Tạo ApartmentForm và truyền user vào
                 Dim apartmentService As IApartmentService = New ApartmentService(New ApartmentRepository())
-                Dim apartmentForm As New ApartmentForm(apartmentService)
+                Dim apartmentForm As New ApartmentForm(apartmentService, user)
 
                 Me.Hide()
                 apartmentForm.ShowDialog()
-
                 Me.Close()
-
-
             Else
                 MessageBox.Show("Tài khoản hoặc mật khẩu không đúng.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
@@ -44,6 +40,7 @@
             MessageBox.Show("Có lỗi xảy ra: " & ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
+
 
     Private Sub LoginForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 

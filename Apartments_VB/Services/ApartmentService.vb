@@ -19,15 +19,41 @@
         Return _repository.GetById(id)
     End Function
 
-    Public Sub Add(apartment As Apartment) Implements IApartmentService.Add
-        ' Logic xử lý trước khi lưu
-        apartment.CreatedDate = DateTime.Now
-        _repository.Add(apartment)
-    End Sub
+    ''' <summary>
+    ''' Cập nhật căn hộ từ ApartmentUpdateDto, trả về entity đã cập nhật
+    ''' </summary>
+    Public Function Update(apartment As ApartmentUpdateDto) As Apartment Implements IApartmentService.Update
+        ' Có thể kiểm tra xem ID tồn tại hay không
+        Dim existing = _repository.GetById(apartment.Id)
+        If existing Is Nothing Then
+            Throw New ArgumentException($"Không tìm thấy căn hộ với ID = {apartment.Id}")
+        End If
 
-    Public Sub Update(apartment As Apartment) Implements IApartmentService.Update
-        _repository.Update(apartment)
-    End Sub
+        existing.ApartmentTypeId = apartment.ApartmentTypeId
+        existing.Name = apartment.Name
+        existing.Address = apartment.Address
+        existing.FloorCount = apartment.FloorCount
+        existing.Price = apartment.Price
+
+        Return _repository.Update(existing)
+    End Function
+
+    ''' <summary>
+    ''' Thêm căn hộ mới từ ApartmentCreateDto, trả về entity vừa tạo
+    ''' </summary>
+    Public Function Add(apartment As ApartmentCreateDto) As Apartment Implements IApartmentService.Add
+        Dim entity As New Apartment With {
+        .ApartmentTypeId = apartment.ApartmentTypeId,
+        .Name = apartment.Name,
+        .Address = apartment.Address,
+        .FloorCount = apartment.FloorCount,
+        .Price = apartment.Price,
+        .CreatedDate = DateTime.Now ' Gán ngày tạo
+    }
+
+        Return _repository.Add(entity)
+    End Function
+
 
     Public Sub Delete(id As Integer) Implements IApartmentService.Delete
         _repository.Delete(id)

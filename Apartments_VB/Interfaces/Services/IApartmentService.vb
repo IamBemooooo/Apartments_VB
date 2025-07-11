@@ -19,14 +19,14 @@ Public Interface IApartmentService
     Function GetById(id As Integer) As Apartment
 
     ''' <summary>
-    ''' Thêm căn hộ mới
+    ''' Thêm căn hộ mới (dùng DTO để truyền dữ liệu đầu vào, trả về entity)
     ''' </summary>
-    Sub Add(apartment As Apartment)
+    Function Add(apartment As ApartmentCreateDto) As Apartment
 
     ''' <summary>
-    ''' Cập nhật căn hộ
+    ''' Cập nhật căn hộ (dùng DTO để truyền dữ liệu đầu vào, trả về entity)
     ''' </summary>
-    Sub Update(apartment As Apartment)
+    Function Update(apartment As ApartmentUpdateDto) As Apartment
 
     ''' <summary>
     ''' Xoá căn hộ

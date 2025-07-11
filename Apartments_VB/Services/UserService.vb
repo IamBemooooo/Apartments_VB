@@ -7,7 +7,7 @@
         _userRepository = userRepository
     End Sub
 
-    Public Function Login(username As String, password As String) As User Implements IUserService.Login
+    Public Function Login(username As String, password As String) As CurrentUserDto Implements IUserService.Login
         ' Bạn có thể thêm hash password ở đây nếu cần
         Return _userRepository.Login(username, password)
     End Function

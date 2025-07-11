@@ -19,14 +19,14 @@ Public Interface IApartmentRepository
     Function GetById(id As Integer) As Apartment
 
     ''' <summary>
-    ''' Thêm mới căn hộ
+    ''' Thêm mới căn hộ và trả về bản ghi vừa thêm
     ''' </summary>
-    Sub Add(apartment As Apartment)
+    Function Add(apartment As Apartment) As Apartment
 
     ''' <summary>
-    ''' Cập nhật thông tin căn hộ
+    ''' Cập nhật thông tin căn hộ và trả về bản ghi sau cập nhật
     ''' </summary>
-    Sub Update(apartment As Apartment)
+    Function Update(apartment As Apartment) As Apartment
 
     ''' <summary>
     ''' Xoá căn hộ theo Id

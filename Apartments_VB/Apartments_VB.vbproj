@@ -11,9 +11,10 @@
     <AssemblyName>Apartments_VB</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>WindowsForms</MyType>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>x64</PlatformTarget>
@@ -49,29 +50,11 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=9.0.0.7, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.9.0.7\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.DependencyInjection, Version=9.0.0.7, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.9.0.7\lib\net462\Microsoft.Extensions.DependencyInjection.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=9.0.0.7, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.9.0.7\lib\net462\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
-    <Reference Include="System.Configuration.ConfigurationManager, Version=9.0.0.7, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Configuration.ConfigurationManager.9.0.7\lib\net462\System.Configuration.ConfigurationManager.dll</HintPath>
-    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
-    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -95,17 +78,34 @@
   <ItemGroup>
     <Compile Include="ApplicationEvents.vb" />
     <Compile Include="Db\SqlQueries.vb" />
+    <Compile Include="Entities\Dto\ApartmentType\ApartmentTypeDto.vb" />
+    <Compile Include="Entities\Dto\Apartment\ApartmentCreateDto.vb" />
     <Compile Include="Entities\Dto\Apartment\ApartmentDto.vb" />
+    <Compile Include="Entities\Dto\Apartment\ApartmentUpdateDto.vb" />
+    <Compile Include="Entities\Dto\User\CurrentUserDto.vb" />
     <Compile Include="Entities\Models\Apartment.vb" />
     <Compile Include="Entities\Models\ApartmentType.vb" />
     <Compile Include="Entities\Models\Permission.vb" />
     <Compile Include="Entities\Models\Role.vb" />
     <Compile Include="Entities\Models\RolePermission.vb" />
     <Compile Include="Entities\Models\User.vb" />
+    <Compile Include="Enum\UserRole.vb" />
+    <Compile Include="Forms\Apartment\ApartmentCreateForm.Designer.vb">
+      <DependentUpon>ApartmentCreateForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Apartment\ApartmentCreateForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Forms\Apartment\ApartmentForm.Designer.vb">
       <DependentUpon>ApartmentForm.vb</DependentUpon>
     </Compile>
     <Compile Include="Forms\Apartment\ApartmentForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Apartment\ApartmentUpdateForm.Designer.vb">
+      <DependentUpon>ApartmentUpdateForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Apartment\ApartmentUpdateForm.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\LoginForm.vb">
@@ -116,8 +116,10 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Interfaces\Repositories\IApartmentRepository.vb" />
+    <Compile Include="Interfaces\Repositories\IApartmentTypeRepository.vb" />
     <Compile Include="Interfaces\Repositories\IUserRepository.vb" />
     <Compile Include="Interfaces\Services\IApartmentService.vb" />
+    <Compile Include="Interfaces\Services\IApartmentTypeService.vb" />
     <Compile Include="Interfaces\Services\IUserService.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
@@ -136,13 +138,22 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Repositories\ApartmentRepository.vb" />
+    <Compile Include="Repositories\ApartmentTypeRepository.vb" />
     <Compile Include="Repositories\UserRepository.vb" />
+    <Compile Include="ServiceProviderLocator.vb" />
     <Compile Include="Services\ApartmentService.vb" />
+    <Compile Include="Services\ApartmentTypeService.vb" />
     <Compile Include="Services\UserService.vb" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Forms\Apartment\ApartmentCreateForm.resx">
+      <DependentUpon>ApartmentCreateForm.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Apartment\ApartmentForm.resx">
       <DependentUpon>ApartmentForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Apartment\ApartmentUpdateForm.resx">
+      <DependentUpon>ApartmentUpdateForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\LoginForm.resx">
       <DependentUpon>LoginForm.vb</DependentUpon>
@@ -155,6 +166,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
@@ -164,8 +176,6 @@
       <CustomToolNamespace>My</CustomToolNamespace>
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
-    <None Include="Config\App.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />

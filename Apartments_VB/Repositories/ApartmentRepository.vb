@@ -18,17 +18,15 @@ Public Class ApartmentRepository
         Using conn As New OdbcConnection(_connectionString)
             conn.Open()
 
-            Dim query As New StringBuilder("SELECT a.Id, a.ApartmentName, a.Address, a.FloorCount, a.CreatedDate, a.Price, a.ApartmentTypeId,
-            t.Name AS ApartmentTypeName
-            FROM Apartment a
-            JOIN ApartmentType t ON a.ApartmentTypeId = t.Id ")
-            If Not String.IsNullOrWhiteSpace(keyword) Then
-                query.Append("WHERE LOWER(ApartmentName) LIKE ? ")
+            Dim query As New StringBuilder("SELECT a.Id, a.ApartmentName, a.Address, a.FloorCount, a.CreatedDate, a.Price, a.ApartmentTypeId, t.Name AS ApartmentTypeName FROM Apartment a JOIN ApartmentType t ON a.ApartmentTypeId = t.Id ")
+            If Not String.IsNullOrEmpty(keyword) AndAlso keyword.Trim().Length > 0 Then
+                query.Append("WHERE LOWER(a.ApartmentName) LIKE ? ")
             End If
-            query.Append("ORDER BY Id DESC LIMIT ? OFFSET ?")
+
+            query.Append("ORDER BY a.Id DESC LIMIT ? OFFSET ?")
 
             Using cmd As New OdbcCommand(query.ToString(), conn)
-                If Not String.IsNullOrWhiteSpace(keyword) Then
+                If Not String.IsNullOrEmpty(keyword) AndAlso keyword.Trim().Length > 0 Then
                     cmd.Parameters.AddWithValue("", "%" & keyword.ToLower() & "%")
                 End If
                 cmd.Parameters.AddWithValue("", pageSize)
@@ -75,54 +73,62 @@ Public Class ApartmentRepository
         Return Nothing
     End Function
 
-    Public Sub Add(apartment As Apartment) Implements IApartmentRepository.Add
+    Public Function Add(apartment As Apartment) As Apartment Implements IApartmentRepository.Add
         Using conn As New OdbcConnection(_connectionString)
             conn.Open()
 
-            Dim query As String = "
-                INSERT INTO Apartment (ApartmentTypeId, ApartmentName, Address, FloorCount, CreatedDate, Price)
-                VALUES (?, ?, ?, ?, ?, ?)"
+            ' 1. INSERT
+            Dim insertQuery As String = "INSERT INTO Apartment (ApartmentTypeId, ApartmentName, Address, FloorCount, CreatedDate, Price) VALUES (?, ?, ?, ?, ?, ?)"
+            Using insertCmd As New OdbcCommand(insertQuery, conn)
+                insertCmd.Parameters.AddWithValue("", apartment.ApartmentTypeId)
+                insertCmd.Parameters.AddWithValue("", apartment.Name)
+                insertCmd.Parameters.AddWithValue("", apartment.Address)
+                insertCmd.Parameters.AddWithValue("", If(apartment.FloorCount.HasValue, apartment.FloorCount.Value, DBNull.Value))
+                insertCmd.Parameters.AddWithValue("", apartment.CreatedDate)
+                insertCmd.Parameters.AddWithValue("", apartment.Price)
+                insertCmd.ExecuteNonQuery()
+            End Using
 
-            Using cmd As New OdbcCommand(query, conn)
-                cmd.Parameters.AddWithValue("", apartment.ApartmentTypeId)
-                cmd.Parameters.AddWithValue("", apartment.Name)
-                cmd.Parameters.AddWithValue("", apartment.Address)
-                cmd.Parameters.AddWithValue("", If(apartment.FloorCount.HasValue, apartment.FloorCount.Value, DBNull.Value))
-                cmd.Parameters.AddWithValue("", apartment.CreatedDate)
-                cmd.Parameters.AddWithValue("", apartment.Price)
+            ' 2. SELECT LAST_INSERT_ID()
+            Dim idQuery As String = "SELECT LAST_INSERT_ID()"
+            Using idCmd As New OdbcCommand(idQuery, conn)
+                Dim id = Convert.ToInt32(idCmd.ExecuteScalar())
 
-                cmd.ExecuteNonQuery()
+                ' 3. Trả về bản ghi vừa thêm
+                Return GetById(id)
             End Using
         End Using
-    End Sub
+    End Function
 
-    Public Sub Update(apartment As Apartment) Implements IApartmentRepository.Update
+
+
+    Public Function Update(apartment As Apartment) As Apartment Implements IApartmentRepository.Update
         Using conn As New OdbcConnection(_connectionString)
             conn.Open()
 
-            Dim query As String = "
-                UPDATE Apartment SET 
-                    ApartmentTypeId = ?, 
-                    ApartmentName = ?, 
-                    Address = ?, 
-                    FloorCount = ?, 
-                    CreatedDate = ?, 
-                    Price = ?
-                WHERE Id = ?"
+            Dim query As String = "UPDATE Apartment SET ApartmentTypeId = ?, ApartmentName = ?, Address = ?, FloorCount = ?, Price = ? WHERE Id = ?"
 
             Using cmd As New OdbcCommand(query, conn)
                 cmd.Parameters.AddWithValue("", apartment.ApartmentTypeId)
                 cmd.Parameters.AddWithValue("", apartment.Name)
                 cmd.Parameters.AddWithValue("", apartment.Address)
                 cmd.Parameters.AddWithValue("", If(apartment.FloorCount.HasValue, apartment.FloorCount.Value, DBNull.Value))
-                cmd.Parameters.AddWithValue("", apartment.CreatedDate)
                 cmd.Parameters.AddWithValue("", apartment.Price)
                 cmd.Parameters.AddWithValue("", apartment.Id)
 
-                cmd.ExecuteNonQuery()
+                ' Kiểm tra có dòng nào bị ảnh hưởng không
+                Dim affectedRows = cmd.ExecuteNonQuery()
+                If affectedRows = 0 Then
+                    Throw New ArgumentException($"Không tìm thấy căn hộ với Id = {apartment.Id} để cập nhật.")
+                End If
+
+                ' Trả về bản ghi sau cập nhật
+                Return GetById(apartment.Id)
             End Using
         End Using
-    End Sub
+    End Function
+
+
 
     Public Sub Delete(id As Integer) Implements IApartmentRepository.Delete
         Using conn As New OdbcConnection(_connectionString)
@@ -137,23 +143,22 @@ Public Class ApartmentRepository
         End Using
     End Sub
 
+    ' =====================
+    ' MAPPING FUNCTIONS
+    ' =====================
     Private Function MapDto(reader As OdbcDataReader) As ApartmentDto
         Dim dto As New ApartmentDto()
 
-        dto.Id = reader.GetInt32(reader.GetOrdinal("Id"))
-        If HasColumn(reader, "ApartmentTypeName") AndAlso Not reader.IsDBNull(reader.GetOrdinal("ApartmentTypeName")) Then
-            dto.ApartmentTypeName = reader("ApartmentTypeName").ToString()
+        dto.Id = SafeGetInt(reader, "Id")
+        dto.Name = SafeGetString(reader, "ApartmentName")
+        dto.Address = SafeGetString(reader, "Address")
+        dto.FloorCount = SafeGetNullableInt(reader, "FloorCount")
+        dto.CreatedDate = SafeGetDate(reader, "CreatedDate")
+        dto.Price = SafeGetDecimal(reader, "Price")
+
+        If HasColumn(reader, "ApartmentTypeName") Then
+            dto.ApartmentTypeName = SafeGetString(reader, "ApartmentTypeName")
         End If
-        dto.Name = reader("ApartmentName").ToString()
-        dto.Address = reader("Address").ToString()
-
-        Dim floorOrdinal = reader.GetOrdinal("FloorCount")
-        dto.FloorCount = If(reader.IsDBNull(floorOrdinal), CType(Nothing, Integer?), reader.GetInt32(floorOrdinal))
-
-        dto.CreatedDate = reader.GetDateTime(reader.GetOrdinal("CreatedDate"))
-        dto.Price = reader.GetDecimal(reader.GetOrdinal("Price"))
-
-
 
         Return dto
     End Function
@@ -161,17 +166,13 @@ Public Class ApartmentRepository
     Private Function MapEntity(reader As OdbcDataReader) As Apartment
         Dim apartment As New Apartment()
 
-        apartment.Id = reader.GetInt32(reader.GetOrdinal("Id"))
-        apartment.ApartmentTypeId = reader.GetInt32(reader.GetOrdinal("ApartmentTypeId"))
-        apartment.Name = reader("ApartmentName").ToString()
-        apartment.Address = reader("Address").ToString()
-
-        Dim floorOrdinal = reader.GetOrdinal("FloorCount")
-        apartment.FloorCount = If(reader.IsDBNull(floorOrdinal), CType(Nothing, Integer?), reader.GetInt32(floorOrdinal))
-
-        apartment.CreatedDate = reader.GetDateTime(reader.GetOrdinal("CreatedDate"))
-        apartment.Price = reader.GetDecimal(reader.GetOrdinal("Price"))
-
+        apartment.Id = SafeGetInt(reader, "Id")
+        apartment.ApartmentTypeId = SafeGetInt(reader, "ApartmentTypeId")
+        apartment.Name = SafeGetString(reader, "ApartmentName")
+        apartment.Address = SafeGetString(reader, "Address")
+        apartment.FloorCount = SafeGetNullableInt(reader, "FloorCount")
+        apartment.CreatedDate = SafeGetDate(reader, "CreatedDate")
+        apartment.Price = SafeGetDecimal(reader, "Price")
 
         Return apartment
     End Function
@@ -184,5 +185,53 @@ Public Class ApartmentRepository
         Next
         Return False
     End Function
+
+    ' =====================
+    ' HÀM HỖ TRỢ ĐỌC DỮ LIỆU AN TOÀN
+    ' =====================
+
+    ''' <summary>
+    ''' Lấy kiểu Integer từ cột, nếu NULL thì trả về 0
+    ''' </summary>
+    Private Function SafeGetInt(reader As OdbcDataReader, column As String) As Integer
+        Dim ordinal = reader.GetOrdinal(column)
+        Return If(reader.IsDBNull(ordinal), 0, reader.GetInt32(ordinal))
+    End Function
+
+    ''' <summary>
+    ''' Lấy kiểu Integer nullable, nếu NULL thì trả về Nothing
+    ''' </summary>
+    Private Function SafeGetNullableInt(reader As OdbcDataReader, column As String) As Integer?
+        Dim ordinal = reader.GetOrdinal(column)
+        Return If(reader.IsDBNull(ordinal), CType(Nothing, Integer?), reader.GetInt32(ordinal))
+    End Function
+
+    ''' <summary>
+    ''' Lấy chuỗi từ cột, xử lý cả trường hợp có dấu và NULL an toàn
+    ''' </summary>
+    Private Function SafeGetString(reader As OdbcDataReader, column As String) As String
+        Dim ordinal = reader.GetOrdinal(column)
+        If reader.IsDBNull(ordinal) Then Return Nothing
+
+        ' Dùng GetValue().ToString() thay vì GetString() để tránh lỗi ODBC với ký tự Unicode
+        Return reader.GetValue(ordinal).ToString()
+    End Function
+
+    ''' <summary>
+    ''' Lấy kiểu DateTime từ cột, nếu NULL thì trả về Date.MinValue
+    ''' </summary>
+    Private Function SafeGetDate(reader As OdbcDataReader, column As String) As DateTime
+        Dim ordinal = reader.GetOrdinal(column)
+        Return If(reader.IsDBNull(ordinal), Date.MinValue, reader.GetDateTime(ordinal))
+    End Function
+
+    ''' <summary>
+    ''' Lấy kiểu Decimal từ cột, nếu NULL thì trả về 0
+    ''' </summary>
+    Private Function SafeGetDecimal(reader As OdbcDataReader, column As String) As Decimal
+        Dim ordinal = reader.GetOrdinal(column)
+        Return If(reader.IsDBNull(ordinal), 0D, reader.GetDecimal(ordinal))
+    End Function
+
 
 End Class
