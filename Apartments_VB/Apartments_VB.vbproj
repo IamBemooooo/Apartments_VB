@@ -77,7 +77,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationEvents.vb" />
-    <Compile Include="Db\SqlQueries.vb" />
     <Compile Include="Entities\Dto\ApartmentType\ApartmentTypeDto.vb" />
     <Compile Include="Entities\Dto\Apartment\ApartmentCreateDto.vb" />
     <Compile Include="Entities\Dto\Apartment\ApartmentDto.vb" />
@@ -85,6 +84,7 @@
     <Compile Include="Entities\Dto\User\CurrentUserDto.vb" />
     <Compile Include="Entities\Models\Apartment.vb" />
     <Compile Include="Entities\Models\ApartmentType.vb" />
+    <Compile Include="Entities\Models\MaintenanceRequest.vb" />
     <Compile Include="Entities\Models\Permission.vb" />
     <Compile Include="Entities\Models\Role.vb" />
     <Compile Include="Entities\Models\RolePermission.vb" />
@@ -177,6 +177,8 @@
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Sql\script.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>
