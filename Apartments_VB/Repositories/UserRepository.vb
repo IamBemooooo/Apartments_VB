@@ -17,7 +17,10 @@ Public Class UserRepository
         Using conn As New OdbcConnection(_connectionString)
             conn.Open()
 
-            Dim query As String = SqlQueries.User.LoginQuery
+            Dim query As String = "
+            SELECT Id, FullName, RoleId 
+            FROM User 
+            WHERE Username = ? AND PasswordHash = ? AND IsActive = 1"
 
             Using cmd As New OdbcCommand(query, conn)
                 cmd.Parameters.AddWithValue("Username", username)
