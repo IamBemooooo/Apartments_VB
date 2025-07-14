@@ -119,7 +119,7 @@ Public Class ApartmentRepository
                 ' Kiểm tra có dòng nào bị ảnh hưởng không
                 Dim affectedRows = cmd.ExecuteNonQuery()
                 If affectedRows = 0 Then
-                    Throw New ArgumentException($"Không tìm thấy căn hộ với Id = {apartment.Id} để cập nhật.")
+                    Throw New ArgumentException($"Không có trường nào được thay đổi!")
                 End If
 
                 ' Trả về bản ghi sau cập nhật

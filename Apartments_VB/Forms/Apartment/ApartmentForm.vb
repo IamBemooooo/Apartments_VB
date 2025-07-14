@@ -90,7 +90,6 @@
         ' Truyền apartmentId vào form cập nhật
 
         Dim updateForm As New ApartmentUpdateForm(apartmentId, _apartmentService, apartmentTypeService)
-        updateForm.ShowDialog()
         ' Hiển thị form cập nhật dạng modal
         updateForm.ShowDialog()
 
