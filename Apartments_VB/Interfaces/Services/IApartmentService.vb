@@ -6,12 +6,13 @@ Public Interface IApartmentService
     ''' <summary>
     ''' Lấy danh sách căn hộ có phân trang (trả về DTO)
     ''' </summary>
-    Function GetPagedList(keyword As String, pageIndex As Integer, pageSize As Integer) As List(Of ApartmentDto)
+    Function GetPagedList(keyword As String, typeId As Integer, pageIndex As Integer, pageSize As Integer) As List(Of ApartmentDto)
 
     ''' <summary>
-    ''' Trả về tổng số căn hộ (phục vụ phân trang)
+    ''' Trả về tổng số căn hộ (phục vụ phân trang), có thể lọc theo từ khóa tìm kiếm,loại căn hộ.
     ''' </summary>
-    Function GetTotalCount() As Integer
+    ''' <param name="keyword">Từ khóa tìm kiếm theo tên hoặc địa chỉ căn hộ (tùy chọn).</param>
+    Function GetTotalCount(keyword As String, typeId As Integer) As Integer
 
     ''' <summary>
     ''' Lấy thông tin chi tiết căn hộ theo Id (trả về entity)
@@ -33,4 +34,11 @@ Public Interface IApartmentService
     ''' </summary>
     Sub Delete(id As Integer)
 
+
+    ''' <summary>
+    ''' Lấy tất cả căn hộ theo từ khóa tìm kiếm (trả về danh sách DTO)
+    ''' </summary>
+    ''' <param name="keyword"></param>
+    ''' <returns></returns>
+    Function GetAllByKeyword(keyword As String, typeId As Integer) As List(Of ApartmentDto)
 End Interface

@@ -27,6 +27,8 @@ Partial Class LoginForm
         Me.txtPassword = New System.Windows.Forms.TextBox()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.btnLogin = New System.Windows.Forms.Button()
+        Me.lblErrorUserName = New System.Windows.Forms.Label()
+        Me.lblErrorPassword = New System.Windows.Forms.Label()
         Me.SuspendLayout()
         '
         'Label1
@@ -50,7 +52,7 @@ Partial Class LoginForm
         'txtPassword
         '
         Me.txtPassword.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtPassword.Location = New System.Drawing.Point(144, 105)
+        Me.txtPassword.Location = New System.Drawing.Point(144, 123)
         Me.txtPassword.Name = "txtPassword"
         Me.txtPassword.Size = New System.Drawing.Size(226, 27)
         Me.txtPassword.TabIndex = 3
@@ -59,7 +61,7 @@ Partial Class LoginForm
         '
         Me.Label2.AutoSize = True
         Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label2.Location = New System.Drawing.Point(47, 108)
+        Me.Label2.Location = New System.Drawing.Point(47, 126)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(87, 20)
         Me.Label2.TabIndex = 4
@@ -70,18 +72,40 @@ Partial Class LoginForm
         Me.btnLogin.BackColor = System.Drawing.SystemColors.ActiveCaption
         Me.btnLogin.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnLogin.ForeColor = System.Drawing.SystemColors.ButtonHighlight
-        Me.btnLogin.Location = New System.Drawing.Point(215, 162)
+        Me.btnLogin.Location = New System.Drawing.Point(234, 188)
         Me.btnLogin.Name = "btnLogin"
         Me.btnLogin.Size = New System.Drawing.Size(136, 39)
         Me.btnLogin.TabIndex = 5
         Me.btnLogin.Text = "Đăng nhập"
         Me.btnLogin.UseVisualStyleBackColor = False
         '
+        'lblErrorUserName
+        '
+        Me.lblErrorUserName.AutoSize = True
+        Me.lblErrorUserName.ForeColor = System.Drawing.Color.IndianRed
+        Me.lblErrorUserName.Location = New System.Drawing.Point(144, 93)
+        Me.lblErrorUserName.Name = "lblErrorUserName"
+        Me.lblErrorUserName.Size = New System.Drawing.Size(141, 16)
+        Me.lblErrorUserName.TabIndex = 6
+        Me.lblErrorUserName.Text = "thông báo lỗi tài khoản"
+        '
+        'lblErrorPassword
+        '
+        Me.lblErrorPassword.AutoSize = True
+        Me.lblErrorPassword.ForeColor = System.Drawing.Color.IndianRed
+        Me.lblErrorPassword.Location = New System.Drawing.Point(144, 162)
+        Me.lblErrorPassword.Name = "lblErrorPassword"
+        Me.lblErrorPassword.Size = New System.Drawing.Size(141, 16)
+        Me.lblErrorPassword.TabIndex = 7
+        Me.lblErrorPassword.Text = "thông báo lỗi mật khẩu"
+        '
         'LoginForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(449, 239)
+        Me.Controls.Add(Me.lblErrorPassword)
+        Me.Controls.Add(Me.lblErrorUserName)
         Me.Controls.Add(Me.btnLogin)
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.txtPassword)
@@ -99,4 +123,6 @@ Partial Class LoginForm
     Friend WithEvents txtPassword As TextBox
     Friend WithEvents Label2 As Label
     Friend WithEvents btnLogin As Button
+    Friend WithEvents lblErrorUserName As Label
+    Friend WithEvents lblErrorPassword As Label
 End Class

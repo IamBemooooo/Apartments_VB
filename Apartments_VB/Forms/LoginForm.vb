@@ -12,25 +12,33 @@
 
     Private Sub btnLogin_Click(sender As Object, e As EventArgs) Handles btnLogin.Click
         Try
+            ' Reset lỗi trước mỗi lần validate
+            lblErrorUserName.Text = ""
+            lblErrorPassword.Text = ""
+
+            Dim result As New ValidationResult()
+
+            ' Gọi validation cho các trường
+            ValidationHelper.ValidateTextField(result, txtUserName, "Tên đăng nhập", True)
+            ValidationHelper.ValidateTextField(result, txtPassword, "Mật khẩu", True)
+
+            lblErrorUserName.Text = result.GetErrorByField(txtUserName.Name)
+            lblErrorPassword.Text = result.GetErrorByField(txtPassword.Name)
+
+            ' Nếu có lỗi thì không tiếp tục
+            If Not result.IsValid Then Return
+
             Dim username As String = txtUserName.Text.Trim()
             Dim password As String = txtPassword.Text
-
-            If String.IsNullOrEmpty(username) OrElse String.IsNullOrEmpty(password) Then
-                MessageBox.Show("Vui lòng nhập đầy đủ thông tin.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-                Return
-            End If
 
             Dim user = _userService.Login(username, password)
 
             If user IsNot Nothing Then
                 MessageBox.Show("Đăng nhập thành công! Xin chào: " & user.FullName, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information)
 
-                ' Tạo ApartmentForm và truyền user vào
-                Dim apartmentService As IApartmentService = New ApartmentService(New ApartmentRepository())
-                Dim apartmentForm As New ApartmentForm(apartmentService, user)
-
+                Dim mainForm As New MainForm(user)
                 Me.Hide()
-                apartmentForm.ShowDialog()
+                mainForm.ShowDialog()
                 Me.Close()
             Else
                 MessageBox.Show("Tài khoản hoặc mật khẩu không đúng.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -41,8 +49,9 @@
         End Try
     End Sub
 
-
     Private Sub LoginForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-
+        ' Reset lỗi trước mỗi lần validate
+        lblErrorUserName.Text = ""
+        lblErrorPassword.Text = ""
     End Sub
 End Class

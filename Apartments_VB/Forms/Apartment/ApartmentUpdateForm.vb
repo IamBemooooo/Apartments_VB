@@ -36,15 +36,29 @@
                 End If
             End If
 
+            resetErrorLabels()
+
         Catch ex As Exception
             MessageBox.Show("Không thể tải dữ liệu căn hộ: " & ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Me.Close() ' Đóng form vì không thể làm gì tiếp nếu lỗi load
         End Try
     End Sub
 
+    Private Sub resetErrorLabels()
+        ' Reset tất cả nhãn lỗi về rỗng
+        lblErrorApartmentName.Text = ""
+        lblErrorApartmentType.Text = ""
+        lblErrorAddress.Text = ""
+        lblErrorFloorCount.Text = ""
+        lblErrorPrice.Text = ""
+    End Sub
 
     Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
         Try
+            resetErrorLabels()
+
+            Dim result As New ValidationResult()
+
             ' Lấy dữ liệu từ form
             Dim name = txtName.Text.Trim()
             Dim address = txtAddress.Text.Trim()
@@ -52,11 +66,21 @@
             Dim price As Decimal = Convert.ToDecimal(txtPrice.Text)
             Dim typeId As Integer = Convert.ToInt32(cbxApartmentType.SelectedValue)
 
-            ' Kiểm tra ràng buộc đơn giản
-            If String.IsNullOrEmpty(name) OrElse String.IsNullOrEmpty(address) Then
-                MessageBox.Show("Vui lòng nhập đầy đủ thông tin.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-                Return
-            End If
+            ' 2. Gọi các hàm kiểm tra từ ValidationHelper
+            ValidationHelper.ValidateTextField(result, txtName, "tên căn hộ")
+            ValidationHelper.ValidateTextField(result, txtAddress, "địa chỉ")
+            ValidationHelper.ValidateIntegerField(result, txtFloorCount, "số tầng", True, 1)
+            ValidationHelper.ValidateDecimalField(result, txtPrice, "giá", True, 0)
+            ValidationHelper.ValidateComboBox(result, cbxApartmentType, "loại căn hộ")
+
+            lblErrorApartmentName.Text = result.GetErrorByField(txtName.Name)
+            lblErrorApartmentType.Text = result.GetErrorByField(cbxApartmentType.Name)
+            lblErrorAddress.Text = result.GetErrorByField(txtAddress.Name)
+            lblErrorFloorCount.Text = result.GetErrorByField(txtFloorCount.Name)
+            lblErrorPrice.Text = result.GetErrorByField(txtPrice.Name)
+
+            ' Nếu có lỗi thì không tiếp tục
+            If Not result.IsValid Then Return
 
             ' Tạo DTO
             Dim apartmentDto As New ApartmentUpdateDto With {
@@ -81,5 +105,4 @@
             MessageBox.Show("Có lỗi xảy ra khi cập nhật: " & ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
-
 End Class

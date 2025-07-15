@@ -50,6 +50,12 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ClosedXML, Version=0.87.0.0, Culture=neutral, PublicKeyToken=fd1eb21b62ae805b, processorArchitecture=MSIL">
+      <HintPath>..\packages\ClosedXML.0.87.1\lib\net35\ClosedXML.dll</HintPath>
+    </Reference>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.0.5022.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\DocumentFormat.OpenXml.1.0\lib\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
@@ -81,6 +87,7 @@
     <Compile Include="Entities\Dto\Apartment\ApartmentCreateDto.vb" />
     <Compile Include="Entities\Dto\Apartment\ApartmentDto.vb" />
     <Compile Include="Entities\Dto\Apartment\ApartmentUpdateDto.vb" />
+    <Compile Include="Entities\Dto\error\ValidationError.vb" />
     <Compile Include="Entities\Dto\User\CurrentUserDto.vb" />
     <Compile Include="Entities\Models\Apartment.vb" />
     <Compile Include="Entities\Models\ApartmentResident.vb" />
@@ -98,12 +105,6 @@
     <Compile Include="Forms\Apartment\ApartmentCreateForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Apartment\ApartmentForm.Designer.vb">
-      <DependentUpon>ApartmentForm.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Apartment\ApartmentForm.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Forms\Apartment\ApartmentUpdateForm.Designer.vb">
       <DependentUpon>ApartmentUpdateForm.vb</DependentUpon>
     </Compile>
@@ -115,6 +116,12 @@
     </Compile>
     <Compile Include="Forms\LoginForm.Designer.vb">
       <DependentUpon>LoginForm.vb</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MainForm.Designer.vb">
+      <DependentUpon>MainForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MainForm.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Interfaces\Repositories\IApartmentRepository.vb" />
@@ -146,13 +153,30 @@
     <Compile Include="Services\ApartmentService.vb" />
     <Compile Include="Services\ApartmentTypeService.vb" />
     <Compile Include="Services\UserService.vb" />
+    <Compile Include="Usercontrols\Apartment\ApartmentControl.Designer.vb">
+      <DependentUpon>ApartmentControl.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Usercontrols\Apartment\ApartmentControl.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Usercontrols\MaintenanceRequest\MaintenanceRequestControl.Designer.vb">
+      <DependentUpon>MaintenanceRequestControl.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Usercontrols\MaintenanceRequest\MaintenanceRequestControl.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Usercontrols\Resident\ResidentControl.Designer.vb">
+      <DependentUpon>ResidentControl.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Usercontrols\Resident\ResidentControl.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Utilities\ValidationHelper.vb" />
+    <Compile Include="Utilities\ValidationResult.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Forms\Apartment\ApartmentCreateForm.resx">
       <DependentUpon>ApartmentCreateForm.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Apartment\ApartmentForm.resx">
-      <DependentUpon>ApartmentForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Apartment\ApartmentUpdateForm.resx">
       <DependentUpon>ApartmentUpdateForm.vb</DependentUpon>
@@ -160,11 +184,23 @@
     <EmbeddedResource Include="Forms\LoginForm.resx">
       <DependentUpon>LoginForm.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MainForm.resx">
+      <DependentUpon>MainForm.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Usercontrols\Apartment\ApartmentControl.resx">
+      <DependentUpon>ApartmentControl.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Usercontrols\MaintenanceRequest\MaintenanceRequestControl.resx">
+      <DependentUpon>MaintenanceRequestControl.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Usercontrols\Resident\ResidentControl.resx">
+      <DependentUpon>ResidentControl.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -178,6 +214,7 @@
       <CustomToolNamespace>My</CustomToolNamespace>
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Sql\script.sql" />

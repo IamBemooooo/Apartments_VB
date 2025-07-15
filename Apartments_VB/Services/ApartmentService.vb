@@ -7,14 +7,6 @@
         _repository = repository
     End Sub
 
-    Public Function GetPagedList(keyword As String, pageIndex As Integer, pageSize As Integer) As List(Of ApartmentDto) Implements IApartmentService.GetPagedList
-        Return _repository.GetPagedListWithKeyword(keyword, pageIndex, pageSize)
-    End Function
-
-    Public Function GetTotalCount() As Integer Implements IApartmentService.GetTotalCount
-        Return _repository.GetTotalCount()
-    End Function
-
     Public Function GetById(id As Integer) As Apartment Implements IApartmentService.GetById
         Return _repository.GetById(id)
     End Function
@@ -54,9 +46,19 @@
         Return _repository.Add(entity)
     End Function
 
-
     Public Sub Delete(id As Integer) Implements IApartmentService.Delete
         _repository.Delete(id)
     End Sub
 
+    Public Function GetPagedList(keyword As String, typeId As Integer, pageIndex As Integer, pageSize As Integer) As List(Of ApartmentDto) Implements IApartmentService.GetPagedList
+        Return _repository.GetPagedListWithKeyword(keyword, typeId, pageIndex, pageSize)
+    End Function
+
+    Public Function GetTotalCount(keyword As String, typeId As Integer) As Integer Implements IApartmentService.GetTotalCount
+        Return _repository.GetTotalCount(keyword, typeId)
+    End Function
+
+    Public Function GetAllByKeyword(keyword As String, typeId As Integer) As List(Of ApartmentDto) Implements IApartmentService.GetAllByKeyword
+        Return _repository.GetAllByKeyword(keyword, typeId)
+    End Function
 End Class

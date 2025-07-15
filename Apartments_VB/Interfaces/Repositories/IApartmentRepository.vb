@@ -4,14 +4,19 @@
 Public Interface IApartmentRepository
 
     ''' <summary>
-    ''' Lấy danh sách căn hộ có phân trang
+    ''' Lấy danh sách căn hộ có phân trang, theo keyword và loại căn hộ
     ''' </summary>
-    Function GetPagedListWithKeyword(keyword As String, pageIndex As Integer, pageSize As Integer) As List(Of ApartmentDto)
+    Function GetPagedListWithKeyword(keyword As String, typeId As Integer, pageIndex As Integer, pageSize As Integer) As List(Of ApartmentDto)
 
     ''' <summary>
-    ''' Trả về tổng số căn hộ trong bảng (phục vụ phân trang)
+    ''' Trả về tổng số căn hộ theo từ khóa và loại căn hộ (phục vụ phân trang)
     ''' </summary>
-    Function GetTotalCount() As Integer
+    Function GetTotalCount(ByVal keyword As String, ByVal typeId As Integer) As Integer
+
+    ''' <summary>
+    ''' Lấy tất cả căn hộ theo từ khóa và loại căn hộ
+    ''' </summary>
+    Function GetAllByKeyword(keyword As String, typeId As Integer) As List(Of ApartmentDto)
 
     ''' <summary>
     ''' Lấy chi tiết căn hộ theo Id

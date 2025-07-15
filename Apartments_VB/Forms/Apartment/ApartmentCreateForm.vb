@@ -1,4 +1,7 @@
-﻿Public Class ApartmentCreateForm
+﻿Imports System.Data.SqlClient
+Imports DocumentFormat.OpenXml
+
+Public Class ApartmentCreateForm
 
     Private ReadOnly _apartmentService As IApartmentService
     Private ReadOnly _apartmentTypeService As IApartmentTypeService
@@ -25,38 +28,52 @@
             cbxApartmentType.ValueMember = "Id"
             cbxApartmentType.DataSource = types
 
+            resetErrorLabels()
+
         Catch ex As Exception
             MessageBox.Show("Lỗi khi tải loại căn hộ: " & ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Me.Close()
         End Try
     End Sub
 
+    Private Sub resetErrorLabels()
+        ' Reset tất cả nhãn lỗi về rỗng
+        lblErrorApartmentName.Text = ""
+        lblErrorApartmentType.Text = ""
+        lblErrorAddress.Text = ""
+        lblErrorFloorCount.Text = ""
+        lblErrorPrice.Text = ""
+    End Sub
+
     ' Khi bấm lưu, lấy dữ liệu từ form và thêm mới căn hộ
     Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
         Try
+
+            resetErrorLabels()
+
+            Dim result As New ValidationResult()
+
             ' Lấy dữ liệu từ form
             Dim name = txtName.Text.Trim()
             Dim address = txtAddress.Text.Trim()
             Dim floorCount As Integer
             Dim price As Decimal
 
-            ' Kiểm tra ràng buộc đơn giản
-            If String.IsNullOrEmpty(name) OrElse String.IsNullOrEmpty(address) Then
-                MessageBox.Show("Vui lòng nhập đầy đủ tên và địa chỉ.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-                Return
-            End If
+            ' 2. Gọi các hàm kiểm tra từ ValidationHelper
+            ValidationHelper.ValidateTextField(result, txtName, "tên căn hộ")
+            ValidationHelper.ValidateTextField(result, txtAddress, "địa chỉ")
+            ValidationHelper.ValidateIntegerField(result, txtFloorCount, "số tầng", True, 1)
+            ValidationHelper.ValidateDecimalField(result, txtPrice, "giá", True, 0)
+            ValidationHelper.ValidateComboBox(result, cbxApartmentType, "loại căn hộ")
 
-            If Not Integer.TryParse(txtFloorCount.Text.Trim(), floorCount) Then
-                MessageBox.Show("Số tầng phải là số nguyên.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-                txtFloorCount.Focus()
-                Return
-            End If
+            lblErrorApartmentName.Text = result.GetErrorByField(txtName.Name)
+            lblErrorApartmentType.Text = result.GetErrorByField(cbxApartmentType.Name)
+            lblErrorAddress.Text = result.GetErrorByField(txtAddress.Name)
+            lblErrorFloorCount.Text = result.GetErrorByField(txtFloorCount.Name)
+            lblErrorPrice.Text = result.GetErrorByField(txtPrice.Name)
 
-            If Not Decimal.TryParse(txtPrice.Text.Trim(), price) Then
-                MessageBox.Show("Giá phải là số.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-                txtPrice.Focus()
-                Return
-            End If
+            ' Nếu có lỗi thì không tiếp tục
+            If Not result.IsValid Then Return
 
             ' Chuẩn bị DTO
             Dim dto As New ApartmentCreateDto With {

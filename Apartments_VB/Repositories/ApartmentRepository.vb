@@ -11,23 +11,31 @@ Public Class ApartmentRepository
         _connectionString = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     End Sub
 
-    Public Function GetPagedListWithKeyword(keyword As String, pageIndex As Integer, pageSize As Integer) As List(Of ApartmentDto) Implements IApartmentRepository.GetPagedListWithKeyword
+    Public Function GetPagedListWithKeyword(keyword As String, typeId As Integer, pageIndex As Integer, pageSize As Integer) As List(Of ApartmentDto) Implements IApartmentRepository.GetPagedListWithKeyword
         Dim result As New List(Of ApartmentDto)
         Dim offset As Integer = (Math.Max(pageIndex, 1) - 1) * pageSize
 
         Using conn As New OdbcConnection(_connectionString)
             conn.Open()
 
-            Dim query As New StringBuilder("SELECT a.Id, a.ApartmentName, a.Address, a.FloorCount, a.CreatedDate, a.Price, a.ApartmentTypeId, t.Name AS ApartmentTypeName FROM Apartment a JOIN ApartmentType t ON a.ApartmentTypeId = t.Id ")
-            If Not String.IsNullOrEmpty(keyword) AndAlso keyword.Trim().Length > 0 Then
-                query.Append("WHERE LOWER(a.ApartmentName) LIKE ? ")
+            Dim query As New StringBuilder("SELECT a.Id, a.ApartmentName, a.Address, a.FloorCount, a.CreatedDate, a.Price, a.ApartmentTypeId, t.Name AS ApartmentTypeName FROM Apartment a JOIN ApartmentType t ON a.ApartmentTypeId = t.Id WHERE 1=1 ")
+
+            If Not String.IsNullOrEmpty(keyword) Then
+                query.Append("AND LOWER(a.ApartmentName) LIKE ? ")
+            End If
+
+            If typeId <> -1 Then
+                query.Append("AND a.ApartmentTypeId = ? ")
             End If
 
             query.Append("ORDER BY a.Id DESC LIMIT ? OFFSET ?")
 
             Using cmd As New OdbcCommand(query.ToString(), conn)
-                If Not String.IsNullOrEmpty(keyword) AndAlso keyword.Trim().Length > 0 Then
+                If Not String.IsNullOrEmpty(keyword) Then
                     cmd.Parameters.AddWithValue("", "%" & keyword.ToLower() & "%")
+                End If
+                If typeId <> -1 Then
+                    cmd.Parameters.AddWithValue("", typeId)
                 End If
                 cmd.Parameters.AddWithValue("", pageSize)
                 cmd.Parameters.AddWithValue("", offset)
@@ -43,15 +51,35 @@ Public Class ApartmentRepository
         Return result
     End Function
 
-    Public Function GetTotalCount() As Integer Implements IApartmentRepository.GetTotalCount
+
+
+    Public Function GetTotalCount(keyword As String, typeId As Integer) As Integer Implements IApartmentRepository.GetTotalCount
         Using conn As New OdbcConnection(_connectionString)
             conn.Open()
 
-            Using cmd As New OdbcCommand("SELECT COUNT(*) FROM Apartment", conn)
+            Dim query As New StringBuilder("SELECT COUNT(*) FROM Apartment WHERE 1=1 ")
+
+            If Not String.IsNullOrEmpty(keyword) Then
+                query.Append("AND ApartmentName LIKE ? ")
+            End If
+
+            If typeId <> -1 Then
+                query.Append("AND ApartmentTypeId = ? ")
+            End If
+
+            Using cmd As New OdbcCommand(query.ToString(), conn)
+                If Not String.IsNullOrEmpty(keyword) Then
+                    cmd.Parameters.AddWithValue("", "%" & keyword.Trim() & "%")
+                End If
+                If typeId <> -1 Then
+                    cmd.Parameters.AddWithValue("", typeId)
+                End If
+
                 Return Convert.ToInt32(cmd.ExecuteScalar())
             End Using
         End Using
     End Function
+
 
     Public Function GetById(id As Integer) As Apartment Implements IApartmentRepository.GetById
         Using conn As New OdbcConnection(_connectionString)
@@ -231,6 +259,43 @@ Public Class ApartmentRepository
     Private Function SafeGetDecimal(reader As OdbcDataReader, column As String) As Decimal
         Dim ordinal = reader.GetOrdinal(column)
         Return If(reader.IsDBNull(ordinal), 0D, reader.GetDecimal(ordinal))
+    End Function
+
+    Public Function GetAllByKeyword(keyword As String, typeId As Integer) As List(Of ApartmentDto) Implements IApartmentRepository.GetAllByKeyword
+        Dim result As New List(Of ApartmentDto)
+
+        Using conn As New OdbcConnection(_connectionString)
+            conn.Open()
+
+            Dim query As New StringBuilder("SELECT a.Id, a.ApartmentName, a.Address, a.FloorCount, a.CreatedDate, a.Price, a.ApartmentTypeId, t.Name AS ApartmentTypeName FROM Apartment a JOIN ApartmentType t ON a.ApartmentTypeId = t.Id WHERE 1=1 ")
+
+            If Not String.IsNullOrEmpty(keyword) Then
+                query.Append("AND LOWER(a.ApartmentName) LIKE ? ")
+            End If
+
+            If typeId <> -1 Then
+                query.Append("AND a.ApartmentTypeId = ? ")
+            End If
+
+            query.Append("ORDER BY a.Id DESC")
+
+            Using cmd As New OdbcCommand(query.ToString(), conn)
+                If Not String.IsNullOrEmpty(keyword) Then
+                    cmd.Parameters.AddWithValue("", "%" & keyword.ToLower() & "%")
+                End If
+                If typeId <> -1 Then
+                    cmd.Parameters.AddWithValue("", typeId)
+                End If
+
+                Using reader As OdbcDataReader = cmd.ExecuteReader()
+                    While reader.Read()
+                        result.Add(MapDto(reader))
+                    End While
+                End Using
+            End Using
+        End Using
+
+        Return result
     End Function
 
 
