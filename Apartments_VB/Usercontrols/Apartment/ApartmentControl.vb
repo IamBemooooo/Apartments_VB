@@ -5,15 +5,17 @@ Public Class ApartmentControl
 
     Private ReadOnly _apartmentService As IApartmentService
     Private ReadOnly _apartmentTypeService As IApartmentTypeService
+    Private ReadOnly _apartmentResidentService As IApartmentResidentService
     Private ReadOnly _currentUser As CurrentUserDto
     Private pageIndex As Integer = 1
     Private ReadOnly pageSize As Integer = 10
     Private totalCount As Integer = 0
 
-    Public Sub New(apartmentService As IApartmentService, apartmentTypeService As IApartmentTypeService, currentUser As CurrentUserDto)
+    Public Sub New(apartmentService As IApartmentService, apartmentTypeService As IApartmentTypeService, apartmentResidentService As IApartmentResidentService, currentUser As CurrentUserDto)
         InitializeComponent()
         _apartmentService = apartmentService
         _currentUser = currentUser
+        _apartmentResidentService = apartmentResidentService
         _apartmentTypeService = apartmentTypeService
     End Sub
 
@@ -160,8 +162,14 @@ Public Class ApartmentControl
 
                 ' Reload danh sách
                 LoadData()
+
             Catch ex As Exception
-                MessageBox.Show("Xóa thất bại: " & ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                ' Kiểm tra lỗi liên quan đến ràng buộc khóa ngoại
+                If ex.Message.ToLower().Contains("foreign key") OrElse ex.Message.ToLower().Contains("constraint") Then
+                    MessageBox.Show("Không thể xóa căn hộ vì có liên kết với dữ liệu khác (ví dụ: cư dân, hóa đơn...).", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Else
+                    MessageBox.Show("Xóa thất bại: " & ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                End If
             End Try
         End If
     End Sub
@@ -301,5 +309,21 @@ Public Class ApartmentControl
         Catch ex As Exception
             MessageBox.Show("Lỗi khi reset tìm kiếm: " & ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
+    End Sub
+
+    Private Sub btnApartmentResident_Click(sender As Object, e As EventArgs) Handles btnApartmentResident.Click
+        ' Kiểm tra người dùng đã chọn dòng nào chưa
+        If dgvApartments.SelectedRows.Count = 0 Then
+            MessageBox.Show("Vui lòng chọn một căn hộ để xem lịch sử cư trú.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            Return
+        End If
+
+        ' Lấy ID căn hộ được chọn
+        Dim selectedRow As DataGridViewRow = dgvApartments.SelectedRows(0)
+        Dim apartmentId As Integer = Convert.ToInt32(selectedRow.Cells("Id").Value)
+
+        ' Mở form popup
+        Dim popup As New ResidentStayHistoryForm(apartmentId, ServiceProviderLocator.ApartmentResidentService)
+        popup.ShowDialog()
     End Sub
 End Class

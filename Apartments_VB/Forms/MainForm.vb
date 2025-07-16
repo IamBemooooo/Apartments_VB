@@ -32,7 +32,7 @@
 
 
     Private Sub btnApartmentTab_Click(sender As Object, e As EventArgs) Handles btnApartmentTab.Click
-        Dim apartmentControl As New ApartmentControl(ServiceProviderLocator.ApartmentService, ServiceProviderLocator.ApartmentTypeService, _currentUser)
+        Dim apartmentControl As New ApartmentControl(ServiceProviderLocator.ApartmentService, ServiceProviderLocator.ApartmentTypeService, ServiceProviderLocator.ApartmentResidentService, _currentUser)
         LoadControl(apartmentControl)
         SetActiveTabButton(btnApartmentTab)
     End Sub
@@ -44,7 +44,7 @@
     End Sub
 
     Private Sub btnResdidentTab_Click(sender As Object, e As EventArgs) Handles btnResdidentTab.Click
-        Dim residentControl As New ResidentControl()
+        Dim residentControl As New ResidentControl(ServiceProviderLocator.ResidentService)
         LoadControl(residentControl)
         SetActiveTabButton(btnResdidentTab)
     End Sub

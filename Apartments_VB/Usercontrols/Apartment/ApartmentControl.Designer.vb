@@ -36,6 +36,7 @@ Partial Class ApartmentControl
         Me.Label1 = New System.Windows.Forms.Label()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.btnResetSearch = New System.Windows.Forms.Button()
+        Me.btnApartmentResident = New System.Windows.Forms.Button()
         CType(Me.dgvApartments, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -169,17 +170,30 @@ Partial Class ApartmentControl
         Me.btnResetSearch.BackColor = System.Drawing.SystemColors.ActiveCaption
         Me.btnResetSearch.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnResetSearch.ForeColor = System.Drawing.SystemColors.ButtonHighlight
-        Me.btnResetSearch.Location = New System.Drawing.Point(22, 73)
+        Me.btnResetSearch.Location = New System.Drawing.Point(22, 72)
         Me.btnResetSearch.Name = "btnResetSearch"
         Me.btnResetSearch.Size = New System.Drawing.Size(132, 38)
         Me.btnResetSearch.TabIndex = 22
         Me.btnResetSearch.Text = "Xóa tìm kiếm"
         Me.btnResetSearch.UseVisualStyleBackColor = False
         '
+        'btnApartmentResident
+        '
+        Me.btnApartmentResident.BackColor = System.Drawing.SystemColors.ActiveCaption
+        Me.btnApartmentResident.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnApartmentResident.ForeColor = System.Drawing.SystemColors.ButtonHighlight
+        Me.btnApartmentResident.Location = New System.Drawing.Point(775, 73)
+        Me.btnApartmentResident.Name = "btnApartmentResident"
+        Me.btnApartmentResident.Size = New System.Drawing.Size(157, 38)
+        Me.btnApartmentResident.TabIndex = 23
+        Me.btnApartmentResident.Text = "Lịch sử cư trú"
+        Me.btnApartmentResident.UseVisualStyleBackColor = False
+        '
         'ApartmentControl
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.Controls.Add(Me.btnApartmentResident)
         Me.Controls.Add(Me.btnResetSearch)
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.Label1)
@@ -216,4 +230,5 @@ Partial Class ApartmentControl
     Friend WithEvents Label1 As Label
     Friend WithEvents Label2 As Label
     Friend WithEvents btnResetSearch As Button
+    Friend WithEvents btnApartmentResident As Button
 End Class

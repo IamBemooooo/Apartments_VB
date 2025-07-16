@@ -83,11 +83,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationEvents.vb" />
+    <Compile Include="Entities\Dto\ApartmentResident\ApartmentResidentCreateDto.vb" />
     <Compile Include="Entities\Dto\ApartmentType\ApartmentTypeDto.vb" />
     <Compile Include="Entities\Dto\Apartment\ApartmentCreateDto.vb" />
     <Compile Include="Entities\Dto\Apartment\ApartmentDto.vb" />
+    <Compile Include="Entities\Dto\Apartment\ApartmentStayHistoryDto.vb" />
     <Compile Include="Entities\Dto\Apartment\ApartmentUpdateDto.vb" />
     <Compile Include="Entities\Dto\error\ValidationError.vb" />
+    <Compile Include="Entities\Dto\Resident\AssignResidentResult.vb" />
+    <Compile Include="Entities\Dto\Resident\ResidentCreateDto.vb" />
+    <Compile Include="Entities\Dto\Resident\ResidentStayHistoryDto.vb" />
+    <Compile Include="Entities\Dto\Resident\ResidentUpdateDto.vb" />
     <Compile Include="Entities\Dto\User\CurrentUserDto.vb" />
     <Compile Include="Entities\Models\Apartment.vb" />
     <Compile Include="Entities\Models\ApartmentResident.vb" />
@@ -111,6 +117,12 @@
     <Compile Include="Forms\Apartment\ApartmentUpdateForm.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\Apartment\ResidentStayHistoryForm.Designer.vb">
+      <DependentUpon>ResidentStayHistoryForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Apartment\ResidentStayHistoryForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Forms\LoginForm.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -124,11 +136,21 @@
     <Compile Include="Forms\MainForm.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\Resident\ResidentCreateForm.Designer.vb">
+      <DependentUpon>ResidentCreateForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Resident\ResidentCreateForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Interfaces\Repositories\IApartmentRepository.vb" />
+    <Compile Include="Interfaces\Repositories\IApartmentResidentRepository.vb" />
     <Compile Include="Interfaces\Repositories\IApartmentTypeRepository.vb" />
+    <Compile Include="Interfaces\Repositories\IResidentRepository.vb" />
     <Compile Include="Interfaces\Repositories\IUserRepository.vb" />
+    <Compile Include="Interfaces\Services\IApartmentResidentService.vb" />
     <Compile Include="Interfaces\Services\IApartmentService.vb" />
     <Compile Include="Interfaces\Services\IApartmentTypeService.vb" />
+    <Compile Include="Interfaces\Services\IResidentService.vb" />
     <Compile Include="Interfaces\Services\IUserService.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
@@ -147,11 +169,15 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Repositories\ApartmentRepository.vb" />
+    <Compile Include="Repositories\ApartmentResidentRepository.vb" />
     <Compile Include="Repositories\ApartmentTypeRepository.vb" />
+    <Compile Include="Repositories\ResidentRepository.vb" />
     <Compile Include="Repositories\UserRepository.vb" />
     <Compile Include="ServiceProviderLocator.vb" />
+    <Compile Include="Services\ApartmentResidentService.vb" />
     <Compile Include="Services\ApartmentService.vb" />
     <Compile Include="Services\ApartmentTypeService.vb" />
+    <Compile Include="Services\ResidentService.vb" />
     <Compile Include="Services\UserService.vb" />
     <Compile Include="Usercontrols\Apartment\ApartmentControl.Designer.vb">
       <DependentUpon>ApartmentControl.vb</DependentUpon>
@@ -181,11 +207,17 @@
     <EmbeddedResource Include="Forms\Apartment\ApartmentUpdateForm.resx">
       <DependentUpon>ApartmentUpdateForm.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Apartment\ResidentStayHistoryForm.resx">
+      <DependentUpon>ResidentStayHistoryForm.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\LoginForm.resx">
       <DependentUpon>LoginForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Resident\ResidentCreateForm.resx">
+      <DependentUpon>ResidentCreateForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>

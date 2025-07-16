@@ -122,4 +122,51 @@ Public Class ValidationHelper
         End If
     End Sub
 
+    Public Shared Sub ValidatePhoneField(
+        result As ValidationResult,
+        textBox As TextBox,
+        fieldLabel As String,
+        Optional required As Boolean = True)
+
+        Dim phone = textBox.Text.Trim()
+        Dim fieldName = textBox.Name
+
+        If required AndAlso String.IsNullOrEmpty(phone) Then
+            result.Add(fieldName, $"Vui lòng nhập {fieldLabel}.")
+            Exit Sub
+        End If
+
+        ' Kiểm tra chỉ chứa số, bắt đầu bằng 0 và có 10-11 chữ số
+        Dim pattern As String = "^0\d{9,10}$"
+        If Not Regex.IsMatch(phone, pattern) Then
+            result.Add(fieldName, $"{fieldLabel} phải bắt đầu bằng 0, gồm 10–11 chữ số.")
+        End If
+    End Sub
+
+    Public Shared Sub ValidateDateOfBirth(
+        result As ValidationResult,
+        datePicker As DateTimePicker,
+        fieldLabel As String,
+        Optional required As Boolean = True,
+        Optional minAge As Integer = 0)
+
+        Dim fieldName = datePicker.Name
+        Dim selectedDate = datePicker.Value.Date
+        Dim today = DateTime.Today
+
+        If required AndAlso selectedDate > today Then
+            result.Add(fieldName, $"{fieldLabel} không được lớn hơn ngày hiện tại.")
+            Exit Sub
+        End If
+
+        If minAge > 0 Then
+            Dim age = today.Year - selectedDate.Year
+            If selectedDate > today.AddYears(-age) Then age -= 1
+
+            If age < minAge Then
+                result.Add(fieldName, $"{fieldLabel} phải từ {minAge} tuổi trở lên.")
+            End If
+        End If
+    End Sub
+
 End Class

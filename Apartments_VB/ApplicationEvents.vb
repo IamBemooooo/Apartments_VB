@@ -37,9 +37,17 @@ Namespace My
             Dim typeRepo As New ApartmentTypeRepository()
             Dim typeService As New ApartmentTypeService(typeRepo)
 
+            Dim apartmentResidentRepo As New ApartmentResidentRepository()
+            Dim apartmentResidentService As New ApartmentResidentService(apartmentResidentRepo)
+
+            Dim residentRepo As New ResidentRepository()
+            Dim residentService As New ResidentService(residentRepo)
+
             ServiceProviderLocator.UserService = userService
             ServiceProviderLocator.ApartmentService = apartmentService
             ServiceProviderLocator.ApartmentTypeService = typeService
+            ServiceProviderLocator.ApartmentResidentService = apartmentResidentService
+            ServiceProviderLocator.ResidentService = residentService
 
             ' 3. Gán form khởi động
             Me.MainForm = New LoginForm(userService)

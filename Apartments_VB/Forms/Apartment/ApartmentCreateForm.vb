@@ -1,5 +1,6 @@
 ﻿Imports System.Data.SqlClient
 Imports DocumentFormat.OpenXml
+Imports DocumentFormat.OpenXml.InkML
 
 Public Class ApartmentCreateForm
 
@@ -56,8 +57,9 @@ Public Class ApartmentCreateForm
             ' Lấy dữ liệu từ form
             Dim name = txtName.Text.Trim()
             Dim address = txtAddress.Text.Trim()
-            Dim floorCount As Integer
-            Dim price As Decimal
+            ' Gán lại giá trị đã qua xác thực
+            Dim floorCount = Convert.ToInt32(txtFloorCount.Text.Trim())
+            Dim price = Convert.ToDecimal(txtPrice.Text.Trim())
 
             ' 2. Gọi các hàm kiểm tra từ ValidationHelper
             ValidationHelper.ValidateTextField(result, txtName, "tên căn hộ")
