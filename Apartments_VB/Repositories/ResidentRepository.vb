@@ -1,5 +1,6 @@
 ﻿Imports System.Configuration
 Imports System.Data.Odbc
+Imports DocumentFormat.OpenXml.Wordprocessing
 
 Public Class ResidentRepository
     Implements IResidentRepository
@@ -59,7 +60,9 @@ Public Class ResidentRepository
                 cmd.Parameters.AddWithValue("@Phone", resident.Phone)
                 cmd.Parameters.AddWithValue("@Email", resident.Email)
                 cmd.Parameters.AddWithValue("@DateOfBirth", If(resident.DateOfBirth.HasValue, resident.DateOfBirth.Value, DBNull.Value))
-                cmd.Parameters.AddWithValue("@Gender", resident.Gender)
+                Dim genderParam As New OdbcParameter("@Gender", OdbcType.Bit)
+                genderParam.Value = If(resident.Gender, 1, 0)
+                cmd.Parameters.Add(genderParam)
                 cmd.Parameters.AddWithValue("@Id", resident.Id)
 
                 cmd.ExecuteNonQuery()
@@ -240,5 +243,25 @@ Public Class ResidentRepository
         Return resident
     End Function
 
+    ' ResidentRepository.vb
+    Public Function ExistsPhone(phone As String, excludedResidentId As Integer) As Boolean Implements IResidentRepository.ExistsPhone
+        Using conn As New OdbcConnection(_connectionString)
+            conn.Open()
+
+            Dim sql As String = "
+            SELECT COUNT(*) 
+            FROM Resident 
+            WHERE Phone = ? AND Id <> ?"
+
+            Using cmd As New OdbcCommand(sql, conn)
+                ' Dùng Add thay vì AddWithValue để tương thích .NET 3.5
+                cmd.Parameters.Add("Phone", OdbcType.VarChar).Value = phone
+                cmd.Parameters.Add("ExcludedId", OdbcType.Int).Value = excludedResidentId
+
+                Dim count As Integer = Convert.ToInt32(cmd.ExecuteScalar())
+                Return count > 0
+            End Using
+        End Using
+    End Function
 
 End Class

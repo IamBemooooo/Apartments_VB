@@ -47,6 +47,10 @@
         If existing Is Nothing Then
             Throw New Exception("Không tìm thấy resident với ID = " & dto.Id)
         End If
+        Dim existingByPhone = _repository.ExistsPhone(dto.Phone, dto.Id)
+        If existingByPhone Then
+            Throw New Exception("Số điện thoại đã được đăng ký.")
+        End If
 
         existing.FullName = dto.FullName
         existing.Phone = dto.Phone

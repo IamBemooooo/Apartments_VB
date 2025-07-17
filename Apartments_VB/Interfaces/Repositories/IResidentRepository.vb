@@ -65,5 +65,12 @@ Public Interface IResidentRepository
     ''' <returns>Resident sau khi được khôi phục và cập nhật</returns>
     Function RestoreAndUpdate(resident As Resident) As Resident
 
+    ''' <summary>
+    ''' Kiểm tra xem số điện thoại đã được sử dụng bởi cư dân khác hay chưa (trừ cư dân đang cập nhật).
+    ''' </summary>
+    ''' <param name="phone">Số điện thoại cần kiểm tra.</param>
+    ''' <param name="excludedResidentId">ID cư dân đang cập nhật để loại trừ khỏi kiểm tra.</param>
+    ''' <returns>True nếu số điện thoại đã tồn tại ở cư dân khác, False nếu không.</returns>
+    Function ExistsPhone(phone As String, excludedResidentId As Integer) As Boolean
 
 End Interface

@@ -3,13 +3,15 @@ Imports System.IO
 
 Public Class ResidentControl
     Private ReadOnly _residentService As IResidentService
+    Private ReadOnly _onDetailRequested As Action(Of Integer)
     Private pageIndex As Integer = 1
     Private ReadOnly pageSize As Integer = 10
     Private totalCount As Integer = 0
 
-    Public Sub New(residentService As IResidentService)
+    Public Sub New(residentService As IResidentService, onDetailRequested As Action(Of Integer))
         InitializeComponent()
         _residentService = residentService
+        _onDetailRequested = onDetailRequested
     End Sub
 
     Private Sub ResidentControl_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -85,25 +87,6 @@ Public Class ResidentControl
         LoadData()
     End Sub
 
-    'Private Sub btnAdd_Click(sender As Object, e As EventArgs) Handles btnAdd.Click
-    '    Dim form As New ResidentCreateForm(_residentService)
-    '    form.ShowDialog()
-    '    LoadData()
-    'End Sub
-
-    'Private Sub btnUpdate_Click(sender As Object, e As EventArgs) Handles btnDetail.Click
-    '    If dgvResidents.SelectedRows.Count = 0 Then
-    '        MessageBox.Show("Vui lòng chọn một cư dân để cập nhật.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information)
-    '        Return
-    '    End If
-
-    '    Dim selectedRow As DataGridViewRow = dgvResidents.SelectedRows(0)
-    '    Dim residentId As Integer = Convert.ToInt32(selectedRow.Cells("Id").Value)
-    '    Dim form As New ResidentUpdateForm(residentId, _residentService)
-    '    form.ShowDialog()
-    '    LoadData()
-    'End Sub
-
     Private Sub btnDelete_Click(sender As Object, e As EventArgs) Handles btnDelete.Click
         If dgvResidents.SelectedRows.Count = 0 Then
             MessageBox.Show("Vui lòng chọn một cư dân để xóa.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -139,5 +122,20 @@ Public Class ResidentControl
 
     Private Sub btnExport_Click(sender As Object, e As EventArgs) Handles btnExport.Click
 
+    End Sub
+
+    Private Sub btnDetail_Click(sender As Object, e As EventArgs) Handles btnDetail.Click
+        If dgvResidents.SelectedRows.Count = 0 Then
+            MessageBox.Show("Vui lòng chọn một cư dân để xem chi tiết.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            Return
+        End If
+
+        Dim selectedRow As DataGridViewRow = dgvResidents.SelectedRows(0)
+        Dim residentId As Integer = Convert.ToInt32(selectedRow.Cells("Id").Value)
+
+        ' Gọi callback được truyền từ MainForm
+        If _onDetailRequested IsNot Nothing Then
+            _onDetailRequested(residentId)
+        End If
     End Sub
 End Class

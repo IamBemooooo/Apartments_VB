@@ -105,6 +105,12 @@
     <Compile Include="Entities\Models\RolePermission.vb" />
     <Compile Include="Entities\Models\User.vb" />
     <Compile Include="Enum\UserRole.vb" />
+    <Compile Include="Forms\ApartmentResident\AddResidentToApartmentForm.Designer.vb">
+      <DependentUpon>AddResidentToApartmentForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ApartmentResident\AddResidentToApartmentForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Forms\Apartment\ApartmentCreateForm.Designer.vb">
       <DependentUpon>ApartmentCreateForm.vb</DependentUpon>
     </Compile>
@@ -197,10 +203,19 @@
     <Compile Include="Usercontrols\Resident\ResidentControl.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Usercontrols\Resident\ResidentDetailControl.Designer.vb">
+      <DependentUpon>ResidentDetailControl.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Usercontrols\Resident\ResidentDetailControl.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Utilities\ValidationHelper.vb" />
     <Compile Include="Utilities\ValidationResult.vb" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Forms\ApartmentResident\AddResidentToApartmentForm.resx">
+      <DependentUpon>AddResidentToApartmentForm.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Apartment\ApartmentCreateForm.resx">
       <DependentUpon>ApartmentCreateForm.vb</DependentUpon>
     </EmbeddedResource>
@@ -233,6 +248,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Usercontrols\Resident\ResidentControl.resx">
       <DependentUpon>ResidentControl.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Usercontrols\Resident\ResidentDetailControl.resx">
+      <DependentUpon>ResidentDetailControl.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

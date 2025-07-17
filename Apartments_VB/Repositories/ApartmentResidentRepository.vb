@@ -53,38 +53,45 @@ Public Class ApartmentResidentRepository
         Using conn As New OdbcConnection(_connectionString)
             conn.Open()
 
-            Dim sql As String = "
-            SELECT a.Id, a.Name, a.Address, a.FloorCount, at.TypeName AS ApartmentTypeName, ar.StartDate, ar.EndDate
+            ' Dựng SQL query
+            Dim offset = (pageIndex - 1) * pageSize
+            Dim sql As New Text.StringBuilder("
+            SELECT a.Id AS ApartmentId, a.ApartmentName, a.Address, a.FloorCount,
+                   at.Name AS ApartmentTypeName, ar.Note, ar.StartDate, ar.EndDate
             FROM ApartmentResident ar
             JOIN Apartment a ON ar.ApartmentId = a.Id
             JOIN ApartmentType at ON a.ApartmentTypeId = at.Id
-            WHERE ar.ResidentId = ?"
+            WHERE ar.ResidentId = " & residentId)
+
             If endDateNullOnly.HasValue Then
-                sql &= If(endDateNullOnly.Value, " AND ar.EndDate IS NULL", " AND ar.EndDate IS NOT NULL")
+                sql.Append(If(endDateNullOnly.Value, " AND ar.EndDate IS NULL", " AND ar.EndDate IS NOT NULL"))
             End If
-            sql &= " ORDER BY ar.StartDate LIMIT ? OFFSET ?"
 
-            Dim cmd As New OdbcCommand(sql, conn)
-            cmd.Parameters.AddWithValue("@ResidentId", residentId)
-            cmd.Parameters.AddWithValue("@Limit", pageSize)
-            cmd.Parameters.AddWithValue("@Offset", (pageIndex - 1) * pageSize)
+            sql.Append(" ORDER BY ar.StartDate")
+            sql.Append(" LIMIT " & pageSize)
+            sql.Append(" OFFSET " & offset)
 
-            Using reader = cmd.ExecuteReader()
-                While reader.Read()
-                    result.Add(New ApartmentStayHistoryDto With {
-                    .Id = Convert.ToInt32(reader("Id")),
-                    .Name = reader("Name").ToString(),
-                    .Address = reader("Address").ToString(),
-                    .FloorCount = If(IsDBNull(reader("FloorCount")), Nothing, CType(reader("FloorCount"), Integer?)),
-                    .ApartmentTypeName = reader("ApartmentTypeName").ToString(),
-                    .StartDate = Convert.ToDateTime(reader("StartDate")),
-                    .EndDate = If(IsDBNull(reader("EndDate")), Nothing, CType(reader("EndDate"), DateTime?))
-                })
-                End While
+            Using cmd As New OdbcCommand(sql.ToString(), conn)
+                Using reader = cmd.ExecuteReader()
+                    While reader.Read()
+                        result.Add(New ApartmentStayHistoryDto With {
+                        .Id = Convert.ToInt32(reader("ApartmentId")),
+                        .Name = reader("ApartmentName").ToString(),
+                        .Address = reader("Address").ToString(),
+                        .FloorCount = If(IsDBNull(reader("FloorCount")), Nothing, CType(reader("FloorCount"), Integer?)),
+                        .ApartmentTypeName = reader("ApartmentTypeName").ToString(),
+                        .StartDate = Convert.ToDateTime(reader("StartDate")),
+                        .EndDate = If(IsDBNull(reader("EndDate")), Nothing, CType(reader("EndDate"), DateTime?)),
+                        .Note = If(IsDBNull(reader("Note")), String.Empty, reader("Note").ToString())
+                    })
+                    End While
+                End Using
             End Using
         End Using
         Return result
     End Function
+
+
 
 
     Public Function AssignResidentToApartment(entity As ApartmentResident) As AssignResidentResultDto Implements IApartmentResidentRepository.AssignResidentToApartment

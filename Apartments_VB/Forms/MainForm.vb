@@ -44,8 +44,18 @@
     End Sub
 
     Private Sub btnResdidentTab_Click(sender As Object, e As EventArgs) Handles btnResdidentTab.Click
-        Dim residentControl As New ResidentControl(ServiceProviderLocator.ResidentService)
+        ' Truyền delegate để ResidentControl có thể gọi ngược lại LoadControl
+        Dim residentControl As New ResidentControl(
+            ServiceProviderLocator.ResidentService,
+            AddressOf ShowResidentDetail
+        )
         LoadControl(residentControl)
         SetActiveTabButton(btnResdidentTab)
+    End Sub
+
+    ' Hàm được delegate gọi khi nhấn nút Detail trong ResidentControl
+    Private Sub ShowResidentDetail(residentId As Integer)
+        Dim detailControl As New ResidentDetailControl(residentId,ServiceProviderLocator.ResidentService,ServiceProviderLocator.ApartmentResidentService)
+        LoadControl(detailControl)
     End Sub
 End Class
