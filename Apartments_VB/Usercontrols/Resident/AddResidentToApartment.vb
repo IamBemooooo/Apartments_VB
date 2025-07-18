@@ -6,16 +6,18 @@ Public Class AddResidentToApartment
     Private ReadOnly _apartmentService As IApartmentService
     Private ReadOnly _apartmentTypeService As IApartmentTypeService
     Private ReadOnly _apartmentResidentService As IApartmentResidentService
+    Public Property _LoadControlCallback As Action(Of UserControl)
     Private pageIndex As Integer = 1
     Private ReadOnly pageSize As Integer = 10
     Private totalCount As Integer = 0
 
-    Public Sub New(residentId As Integer, apartmentService As IApartmentService, apartmentTypeService As IApartmentTypeService, apartmentResidentService As IApartmentResidentService)
+    Public Sub New(residentId As Integer, apartmentService As IApartmentService, apartmentTypeService As IApartmentTypeService, apartmentResidentService As IApartmentResidentService, LoadControlCallback As Action(Of UserControl))
         InitializeComponent()
         _residentId = residentId
         _apartmentService = apartmentService
         _apartmentTypeService = apartmentTypeService
         _apartmentResidentService = apartmentResidentService
+        _LoadControlCallback = LoadControlCallback
     End Sub
 
     Private Sub AddResidentToApartment_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -100,7 +102,7 @@ Public Class AddResidentToApartment
         End If
 
         Dim apartmentId As Integer = Convert.ToInt32(dgvApartments.CurrentRow.Cells("Id").Value)
-        Dim verifyForm As New VerifyResidence(_residentId, apartmentId, _apartmentResidentService, ServiceProviderLocator.ApartmentTypeService, ServiceProviderLocator.ResidentService, _apartmentService)
+        Dim verifyForm As New VerifyResidence(_residentId, apartmentId, _apartmentResidentService, ServiceProviderLocator.ApartmentTypeService, ServiceProviderLocator.ResidentService, _apartmentService, _LoadControlCallback)
         verifyForm.ShowDialog()
     End Sub
 End Class

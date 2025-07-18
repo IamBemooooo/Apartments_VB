@@ -2,14 +2,14 @@
     Private ReadOnly _residentId As Integer
     Private ReadOnly _residentService As IResidentService
     Private ReadOnly _apartmentResidentService As IApartmentResidentService
-    Public Property LoadControlCallback As Action(Of UserControl) ' <- Thêm dòng này
+    Public Property _LoadControlCallback As Action(Of UserControl) ' <- Thêm dòng này
     Private currentPageIndex As Integer = 1
     Private pageSize As Integer = 10
     Private totalRecords As Integer = 0
     Private totalPages As Integer = 1
 
     ' Constructor có tham số
-    Public Sub New(residentId As Integer, residentService As IResidentService, apartmentResidentService As IApartmentResidentService)
+    Public Sub New(residentId As Integer, residentService As IResidentService, apartmentResidentService As IApartmentResidentService, LoadControlCallback As Action(Of UserControl))
         InitializeComponent()
         cbxGender.Items.Clear()
         cbxGender.Items.AddRange(New String() {"Nữ", "Nam"})
@@ -19,6 +19,7 @@
         _residentId = residentId
         _residentService = residentService
         _apartmentResidentService = apartmentResidentService
+        _LoadControlCallback = LoadControlCallback
         cbxStatus.SelectedIndex = 0 ' Mặc định là Tất cả
     End Sub
 
@@ -208,6 +209,6 @@
     End Sub
 
     Private Sub btnAddResidentToApartment_Click(sender As Object, e As EventArgs) Handles btnAddResidentToApartment.Click
-        LoadControlCallback?.Invoke(New AddResidentToApartment(_residentId,ServiceProviderLocator.ApartmentService ,ServiceProviderLocator.ApartmentTypeService, _apartmentResidentService))
+        _LoadControlCallback?.Invoke(New AddResidentToApartment(_residentId, ServiceProviderLocator.ApartmentService, ServiceProviderLocator.ApartmentTypeService, _apartmentResidentService, _LoadControlCallback))
     End Sub
 End Class

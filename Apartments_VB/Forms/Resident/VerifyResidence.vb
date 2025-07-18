@@ -5,6 +5,7 @@
     Private ReadOnly _apartmentTypeService As IApartmentTypeService
     Private ReadOnly _residentService As IResidentService
     Private ReadOnly _apartmentService As IApartmentService
+    Public Property _LoadControlCallback As Action(Of UserControl)
 
     Public Sub New(
         residentId As Integer,
@@ -12,7 +13,8 @@
         apartmentResidentService As IApartmentResidentService,
         apartmentTypeService As IApartmentTypeService,
         residentService As IResidentService,
-        apartmentService As IApartmentService
+        apartmentService As IApartmentService,
+        LoadControlCallback As Action(Of UserControl)
     )
         InitializeComponent()
         _residentId = residentId
@@ -21,6 +23,7 @@
         _apartmentResidentService = apartmentResidentService
         _residentService = residentService
         _apartmentService = apartmentService
+        _LoadControlCallback = LoadControlCallback
     End Sub
     Private Sub btnConsent_Click(sender As Object, e As EventArgs) Handles btnConsent.Click
         ' Kiểm tra StartDate đã nhập
@@ -47,6 +50,7 @@
         Try
             _apartmentResidentService.AssignResident(apartmentResidentDto)
             MessageBox.Show("Thêm cư dân vào căn hộ thành công.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            _LoadControlCallback?.Invoke(New ResidentDetailControl(_residentId, _residentService, _apartmentResidentService, _LoadControlCallback))
             Me.Close()
         Catch ex As Exception
             MessageBox.Show("Đã xảy ra lỗi khi thêm cư dân: " & ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error)

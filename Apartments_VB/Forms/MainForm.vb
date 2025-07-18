@@ -64,11 +64,12 @@
         Dim detailControl As New ResidentDetailControl(
             residentId,
             ServiceProviderLocator.ResidentService,
-            ServiceProviderLocator.ApartmentResidentService
+            ServiceProviderLocator.ApartmentResidentService,
+            AddressOf LoadControl
         )
 
         ' Gán callback để từ DetailControl có thể mở control khác
-        detailControl.LoadControlCallback = AddressOf LoadControl
+        detailControl._LoadControlCallback = AddressOf LoadControl
 
         LoadControl(detailControl)
     End Sub
