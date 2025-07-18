@@ -133,18 +133,22 @@ Public Class ApartmentResidentRepository
 
 
 
+
     Private Function GetAssignResultDto(conn As OdbcConnection, entity As ApartmentResident) As AssignResidentResultDto
         Dim cmd As New OdbcCommand("
-        SELECT TOP 1 a.Name AS ApartmentName, a.Address,
-                     r.FullName, r.DateOfBirth, r.Gender, r.Phone, r.Email,
-                     ar.StartDate
+        SELECT a.ApartmentName, a.Address,
+               r.FullName, r.DateOfBirth, r.Gender, r.Phone, r.Email,
+               ar.StartDate
         FROM ApartmentResident ar
         JOIN Apartment a ON ar.ApartmentId = a.Id
         JOIN Resident r ON ar.ResidentId = r.Id
         WHERE ar.ApartmentId = ? AND ar.ResidentId = ?
-        ORDER BY ar.StartDate DESC", conn)
-        cmd.Parameters.AddWithValue("@ApartmentId", entity.ApartmentId)
-        cmd.Parameters.AddWithValue("@ResidentId", entity.ResidentId)
+        ORDER BY ar.StartDate DESC
+        LIMIT 1", conn) ' dùng LIMIT thay cho TOP
+
+        'Thứ tự AddWithValue phải đúng thứ tự dấu hỏi
+        cmd.Parameters.AddWithValue("?", entity.ApartmentId)
+        cmd.Parameters.AddWithValue("?", entity.ResidentId)
 
         Using reader As OdbcDataReader = cmd.ExecuteReader()
             If reader.Read() Then
@@ -173,6 +177,7 @@ Public Class ApartmentResidentRepository
 
 
 
+
     Public Function IsResidentCurrentlyInApartment(residentId As Integer, apartmentId As Integer) As Boolean Implements IApartmentResidentRepository.IsResidentCurrentlyInApartment
         Using conn As New OdbcConnection(_connectionString)
             conn.Open()
@@ -186,16 +191,15 @@ Public Class ApartmentResidentRepository
     Public Function GetCurrentApartmentByResidentId(residentId As Integer) As ApartmentDto Implements IApartmentResidentRepository.GetCurrentApartmentByResidentId
         Using conn As New OdbcConnection(_connectionString)
             conn.Open()
-            Dim cmd As New OdbcCommand("SELECT a.Id, a.Name, a.Address, a.FloorCount, a.ApartmentTypeId FROM Apartment a JOIN ApartmentResident ar ON ar.ApartmentId = a.Id WHERE ar.ResidentId = ? AND ar.EndDate IS NULL", conn)
+            Dim cmd As New OdbcCommand("SELECT a.Id, a.ApartmentName, a.Address, a.FloorCount, a.ApartmentTypeId FROM Apartment a JOIN ApartmentResident ar ON ar.ApartmentId = a.Id WHERE ar.ResidentId = ? AND ar.EndDate IS NULL", conn)
             cmd.Parameters.AddWithValue("@ResidentId", residentId)
             Using reader As OdbcDataReader = cmd.ExecuteReader()
                 If reader.Read() Then
                     Return New ApartmentDto With {
                         .Id = Convert.ToInt32(reader("Id")),
-                        .Name = reader("Name").ToString(),
+                        .Name = reader("ApartmentName").ToString(),
                         .Address = reader("Address").ToString(),
-                        .FloorCount = If(IsDBNull(reader("FloorCount")), Nothing, CType(reader("FloorCount"), Integer?)),
-                        .ApartmentTypeName = Convert.ToInt32(reader("ApartmentTypeName"))
+                        .FloorCount = If(IsDBNull(reader("FloorCount")), Nothing, CType(reader("FloorCount"), Integer?))
                     }
                 End If
             End Using
@@ -203,15 +207,22 @@ Public Class ApartmentResidentRepository
         Return Nothing
     End Function
 
-    Public Sub MarkResidentAsMovedOut(residentId As Integer, moveOutDate As DateTime) Implements IApartmentResidentRepository.MarkResidentAsMovedOut
+    Public Sub MarkResidentAsMovedOut(residentId As Integer, moveOutDate As DateTime, note As String) Implements IApartmentResidentRepository.MarkResidentAsMovedOut
         Using conn As New OdbcConnection(_connectionString)
             conn.Open()
-            Dim cmd As New OdbcCommand("UPDATE ApartmentResident SET EndDate = ? WHERE ResidentId = ? AND EndDate IS NULL", conn)
+            Dim cmd As New OdbcCommand("
+            UPDATE ApartmentResident 
+            SET EndDate = ?, Note = ? 
+            WHERE ResidentId = ? AND EndDate IS NULL", conn)
+
             cmd.Parameters.AddWithValue("@EndDate", moveOutDate)
+            cmd.Parameters.AddWithValue("@Note", note)
             cmd.Parameters.AddWithValue("@ResidentId", residentId)
+
             cmd.ExecuteNonQuery()
         End Using
     End Sub
+
 
     Public Function CountResidentStayHistoryByApartmentId(apartmentId As Integer, Optional endDateNullOnly As Boolean? = Nothing) As Integer Implements IApartmentResidentRepository.CountResidentStayHistoryByApartmentId
         Using conn As New OdbcConnection(_connectionString)

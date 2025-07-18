@@ -42,10 +42,11 @@ Partial Class ResidentDetailControl
         Me.lblErrorGender = New System.Windows.Forms.Label()
         Me.lblErrorName = New System.Windows.Forms.Label()
         Me.btnUpdate = New System.Windows.Forms.Button()
-        Me.Button2 = New System.Windows.Forms.Button()
+        Me.btnAddResidentToApartment = New System.Windows.Forms.Button()
         Me.Label6 = New System.Windows.Forms.Label()
         Me.Label7 = New System.Windows.Forms.Label()
         Me.cbxStatus = New System.Windows.Forms.ComboBox()
+        Me.btnLeft = New System.Windows.Forms.Button()
         CType(Me.dgvStayHistory, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -240,17 +241,17 @@ Partial Class ResidentDetailControl
         Me.btnUpdate.Text = "Cập nhật"
         Me.btnUpdate.UseVisualStyleBackColor = False
         '
-        'Button2
+        'btnAddResidentToApartment
         '
-        Me.Button2.BackColor = System.Drawing.SystemColors.ActiveCaption
-        Me.Button2.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Button2.ForeColor = System.Drawing.SystemColors.HighlightText
-        Me.Button2.Location = New System.Drawing.Point(931, 194)
-        Me.Button2.Name = "Button2"
-        Me.Button2.Size = New System.Drawing.Size(121, 32)
-        Me.Button2.TabIndex = 45
-        Me.Button2.Text = "Chuyển cư trú"
-        Me.Button2.UseVisualStyleBackColor = False
+        Me.btnAddResidentToApartment.BackColor = System.Drawing.SystemColors.ActiveCaption
+        Me.btnAddResidentToApartment.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnAddResidentToApartment.ForeColor = System.Drawing.SystemColors.HighlightText
+        Me.btnAddResidentToApartment.Location = New System.Drawing.Point(931, 194)
+        Me.btnAddResidentToApartment.Name = "btnAddResidentToApartment"
+        Me.btnAddResidentToApartment.Size = New System.Drawing.Size(121, 32)
+        Me.btnAddResidentToApartment.TabIndex = 45
+        Me.btnAddResidentToApartment.Text = "Chuyển cư trú"
+        Me.btnAddResidentToApartment.UseVisualStyleBackColor = False
         '
         'Label6
         '
@@ -283,14 +284,25 @@ Partial Class ResidentDetailControl
         Me.cbxStatus.Size = New System.Drawing.Size(144, 28)
         Me.cbxStatus.TabIndex = 49
         '
+        'btnLeft
+        '
+        Me.btnLeft.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnLeft.Location = New System.Drawing.Point(24, 429)
+        Me.btnLeft.Name = "btnLeft"
+        Me.btnLeft.Size = New System.Drawing.Size(121, 32)
+        Me.btnLeft.TabIndex = 50
+        Me.btnLeft.Text = "Rời đi"
+        Me.btnLeft.UseVisualStyleBackColor = True
+        '
         'ResidentDetailControl
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.Controls.Add(Me.btnLeft)
         Me.Controls.Add(Me.cbxStatus)
         Me.Controls.Add(Me.Label7)
         Me.Controls.Add(Me.Label6)
-        Me.Controls.Add(Me.Button2)
+        Me.Controls.Add(Me.btnAddResidentToApartment)
         Me.Controls.Add(Me.btnUpdate)
         Me.Controls.Add(Me.lblErrorEmail)
         Me.Controls.Add(Me.lblErrorPhone)
@@ -339,8 +351,9 @@ Partial Class ResidentDetailControl
     Friend WithEvents lblErrorGender As Label
     Friend WithEvents lblErrorName As Label
     Friend WithEvents btnUpdate As Button
-    Friend WithEvents Button2 As Button
+    Friend WithEvents btnAddResidentToApartment As Button
     Friend WithEvents Label6 As Label
     Friend WithEvents Label7 As Label
     Friend WithEvents cbxStatus As ComboBox
+    Friend WithEvents btnLeft As Button
 End Class

@@ -2,6 +2,7 @@
     Private ReadOnly _residentId As Integer
     Private ReadOnly _residentService As IResidentService
     Private ReadOnly _apartmentResidentService As IApartmentResidentService
+    Public Property LoadControlCallback As Action(Of UserControl) ' <- Thêm dòng này
     Private currentPageIndex As Integer = 1
     Private pageSize As Integer = 10
     Private totalRecords As Integer = 0
@@ -82,12 +83,14 @@
                 lblPagingInfo.Text = "Không có dữ liệu"
                 btnPrev.Enabled = False
                 btnNext.Enabled = False
+                btnLeft.Enabled = False
                 Return
             End If
 
             ' Bind data
             Dim customList = histories.Select(Function(h, index) New With {
             Key .STT = (currentPageIndex - 1) * pageSize + index + 1,
+            Key .MãCănHộ = h.Id,
             Key .TênCănHộ = h.Name,
             Key .LoạiCănHộ = h.ApartmentTypeName,
             Key .SốTầng = h.FloorCount,
@@ -177,12 +180,34 @@
         End Try
     End Sub
 
-    Private Sub Button3_Click(sender As Object, e As EventArgs)
-
-    End Sub
-
     Private Sub cbxStatus_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbxStatus.SelectedIndexChanged
         currentPageIndex = 1
         LoadStayHistory()
+    End Sub
+
+    Private Sub btnLeft_Click(sender As Object, e As EventArgs) Handles btnLeft.Click
+        Dim leftForm As New LeftApartmentFrom(_residentId, _apartmentResidentService)
+        leftForm.ShowDialog()
+
+        LoadStayHistory()
+    End Sub
+
+    Private Sub dgvStayHistory_SelectionChanged(sender As Object, e As EventArgs) Handles dgvStayHistory.SelectionChanged
+        If dgvStayHistory.SelectedRows.Count = 0 Then
+            btnLeft.Enabled = False
+            Return
+        End If
+
+        Dim selectedRow = dgvStayHistory.SelectedRows(0).DataBoundItem
+        Dim endDateStr As String = dgvStayHistory.SelectedRows(0).Cells("ĐếnNgày").Value.ToString()
+        If endDateStr = "Hiện tại" Then
+            btnLeft.Enabled = True
+        Else
+            btnLeft.Enabled = False
+        End If
+    End Sub
+
+    Private Sub btnAddResidentToApartment_Click(sender As Object, e As EventArgs) Handles btnAddResidentToApartment.Click
+        LoadControlCallback?.Invoke(New AddResidentToApartment(_residentId,ServiceProviderLocator.ApartmentService ,ServiceProviderLocator.ApartmentTypeService, _apartmentResidentService))
     End Sub
 End Class

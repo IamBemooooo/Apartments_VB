@@ -28,7 +28,7 @@ Public Interface IApartmentResidentService
     ''' <summary>
     ''' Đánh dấu resident đã rời khỏi căn hộ hiện tại.
     ''' </summary>
-    Sub MarkResidentAsMovedOut(residentId As Integer, moveOutDate As DateTime)
+    Sub MarkResidentAsMovedOut(residentId As Integer, moveOutDate As DateTime, note As String)
 
     ''' <summary>
     ''' Kiểm tra resident có đang ở đúng căn hộ này không.

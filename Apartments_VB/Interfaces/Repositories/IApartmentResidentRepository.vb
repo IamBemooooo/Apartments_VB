@@ -63,7 +63,7 @@ Public Interface IApartmentResidentRepository
     ''' <summary>
     ''' Cập nhật ngày rời khỏi (EndDate) cho bản ghi cư trú hiện tại của resident.
     ''' </summary>
-    Sub MarkResidentAsMovedOut(residentId As Integer, moveOutDate As DateTime)
+    Sub MarkResidentAsMovedOut(residentId As Integer, moveOutDate As DateTime, note As String)
 
     ''' <summary>
     ''' Đếm tổng số resident đã từng ở trong một căn hộ cụ thể (có thể lọc theo trạng thái).

@@ -39,8 +39,8 @@
         Return _repo.GetCurrentApartmentByResidentId(residentId)
     End Function
 
-    Public Sub MarkResidentAsMovedOut(residentId As Integer, moveOutDate As DateTime) Implements IApartmentResidentService.MarkResidentAsMovedOut
-        _repo.MarkResidentAsMovedOut(residentId, moveOutDate)
+    Public Sub MarkResidentAsMovedOut(residentId As Integer, moveOutDate As DateTime, note As String) Implements IApartmentResidentService.MarkResidentAsMovedOut
+        _repo.MarkResidentAsMovedOut(residentId, moveOutDate, note)
     End Sub
 
     Public Function IsResidentCurrentlyInApartment(residentId As Integer, apartmentId As Integer) As Boolean Implements IApartmentResidentService.IsResidentCurrentlyInApartment
