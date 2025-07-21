@@ -122,6 +122,31 @@ Public Class ValidationHelper
         End If
     End Sub
 
+    Public Shared Sub ValidateRichTextField(
+    result As ValidationResult,
+    richTextBox As RichTextBox,
+    fieldLabel As String,
+    Optional required As Boolean = True,
+    Optional minLength As Integer = -1,
+    Optional maxLength As Integer = -1)
+
+        Dim text = richTextBox.Text.Trim()
+        Dim fieldName = richTextBox.Name
+
+        If required AndAlso String.IsNullOrEmpty(text) Then
+            result.Add(fieldName, $"Vui lòng nhập {fieldLabel}.")
+            Exit Sub
+        End If
+
+        If minLength >= 0 AndAlso text.Length < minLength Then
+            result.Add(fieldName, $"{fieldLabel} phải có ít nhất {minLength} ký tự.")
+        End If
+
+        If maxLength >= 0 AndAlso text.Length > maxLength Then
+            result.Add(fieldName, $"{fieldLabel} không được vượt quá {maxLength} ký tự.")
+        End If
+    End Sub
+
     Public Shared Sub ValidatePhoneField(
         result As ValidationResult,
         textBox As TextBox,

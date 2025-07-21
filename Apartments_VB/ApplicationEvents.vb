@@ -43,11 +43,15 @@ Namespace My
             Dim residentRepo As New ResidentRepository()
             Dim residentService As New ResidentService(residentRepo)
 
+            Dim maintenanceRequestRepo As New MaintenanceRequestRepository()
+            Dim maintenanceRequestService As New MaintenanceRequestService(maintenanceRequestRepo)
+
             ServiceProviderLocator.UserService = userService
             ServiceProviderLocator.ApartmentService = apartmentService
             ServiceProviderLocator.ApartmentTypeService = typeService
             ServiceProviderLocator.ApartmentResidentService = apartmentResidentService
             ServiceProviderLocator.ResidentService = residentService
+            ServiceProviderLocator.MaintenanceRequestService = maintenanceRequestService
 
             ' 3. Gán form khởi động
             Me.MainForm = New LoginForm(userService)

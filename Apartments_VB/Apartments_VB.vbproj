@@ -89,7 +89,11 @@
     <Compile Include="Entities\Dto\Apartment\ApartmentDto.vb" />
     <Compile Include="Entities\Dto\Apartment\ApartmentStayHistoryDto.vb" />
     <Compile Include="Entities\Dto\Apartment\ApartmentUpdateDto.vb" />
+    <Compile Include="Entities\Dto\Combobox\ComboItem.vb" />
     <Compile Include="Entities\Dto\error\ValidationError.vb" />
+    <Compile Include="Entities\Dto\MaintenanceRequest\MaintenanceRequestDto.vb" />
+    <Compile Include="Entities\Dto\MaintenanceRequest\MaintenanceRequestCreateDto.vb" />
+    <Compile Include="Entities\Dto\MaintenanceRequest\MaintenanceRequestUpdateDto.vb" />
     <Compile Include="Entities\Dto\Resident\AssignResidentResult.vb" />
     <Compile Include="Entities\Dto\Resident\ResidentCreateDto.vb" />
     <Compile Include="Entities\Dto\Resident\ResidentStayHistoryDto.vb" />
@@ -142,6 +146,12 @@
     <Compile Include="Forms\MainForm.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\MaintenanceRquest\MaintenanceRequestCreateForm.Designer.vb">
+      <DependentUpon>MaintenanceRequestCreateForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MaintenanceRquest\MaintenanceRequestCreateForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Forms\Resident\ResidentCreateForm.Designer.vb">
       <DependentUpon>ResidentCreateForm.vb</DependentUpon>
     </Compile>
@@ -162,6 +172,7 @@
     <Compile Include="Interfaces\Services\IApartmentResidentService.vb" />
     <Compile Include="Interfaces\Services\IApartmentService.vb" />
     <Compile Include="Interfaces\Services\IApartmentTypeService.vb" />
+    <Compile Include="Interfaces\Services\IMaintenanceRequestService.vb" />
     <Compile Include="Interfaces\Services\IResidentService.vb" />
     <Compile Include="Interfaces\Services\IUserService.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
@@ -183,12 +194,15 @@
     <Compile Include="Repositories\ApartmentRepository.vb" />
     <Compile Include="Repositories\ApartmentResidentRepository.vb" />
     <Compile Include="Repositories\ApartmentTypeRepository.vb" />
+    <Compile Include="Interfaces\Repositories\IMaintenanceRequestRepository.vb" />
+    <Compile Include="Repositories\MaintenanceRequestRepository.vb" />
     <Compile Include="Repositories\ResidentRepository.vb" />
     <Compile Include="Repositories\UserRepository.vb" />
     <Compile Include="ServiceProviderLocator.vb" />
     <Compile Include="Services\ApartmentResidentService.vb" />
     <Compile Include="Services\ApartmentService.vb" />
     <Compile Include="Services\ApartmentTypeService.vb" />
+    <Compile Include="Services\MaintenanceRequestService.vb" />
     <Compile Include="Services\ResidentService.vb" />
     <Compile Include="Services\UserService.vb" />
     <Compile Include="Usercontrols\Apartment\ApartmentControl.Designer.vb">
@@ -221,6 +235,7 @@
     <Compile Include="Usercontrols\Resident\ResidentDetailControl.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Utilities\MaintenanceRequestStatus.vb" />
     <Compile Include="Utilities\ValidationHelper.vb" />
     <Compile Include="Utilities\ValidationResult.vb" />
   </ItemGroup>
@@ -242,6 +257,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MaintenanceRquest\MaintenanceRequestCreateForm.resx">
+      <DependentUpon>MaintenanceRequestCreateForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Resident\ResidentCreateForm.resx">
       <DependentUpon>ResidentCreateForm.vb</DependentUpon>

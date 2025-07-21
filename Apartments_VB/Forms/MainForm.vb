@@ -42,7 +42,7 @@
     End Sub
 
     Private Sub btnMaintenanceRequestTab_Click(sender As Object, e As EventArgs) Handles btnMaintenanceRequestTab.Click
-        Dim maintenanceControl As New MaintenanceRequestControl()
+        Dim maintenanceControl As New MaintenanceRequestControl(ServiceProviderLocator.MaintenanceRequestService, ServiceProviderLocator.ApartmentService, _currentUser)
         LoadControl(maintenanceControl)
         SetActiveTabButton(btnMaintenanceRequestTab)
     End Sub
