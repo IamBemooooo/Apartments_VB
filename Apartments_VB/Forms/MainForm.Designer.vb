@@ -29,12 +29,14 @@ Partial Class MainForm
         Me.btnApartmentTab = New System.Windows.Forms.Button()
         Me.Panel2 = New System.Windows.Forms.Panel()
         Me.pnlMainContent = New System.Windows.Forms.Panel()
+        Me.btnLogOut = New System.Windows.Forms.Button()
         Me.Panel1.SuspendLayout()
         Me.SuspendLayout()
         '
         'Panel1
         '
         Me.Panel1.BackColor = System.Drawing.Color.SlateGray
+        Me.Panel1.Controls.Add(Me.btnLogOut)
         Me.Panel1.Controls.Add(Me.lblUserName)
         Me.Panel1.Controls.Add(Me.btnResdidentTab)
         Me.Panel1.Controls.Add(Me.btnMaintenanceRequestTab)
@@ -106,6 +108,18 @@ Partial Class MainForm
         Me.pnlMainContent.Size = New System.Drawing.Size(1067, 524)
         Me.pnlMainContent.TabIndex = 2
         '
+        'btnLogOut
+        '
+        Me.btnLogOut.BackColor = System.Drawing.Color.RosyBrown
+        Me.btnLogOut.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnLogOut.ForeColor = System.Drawing.SystemColors.ActiveCaptionText
+        Me.btnLogOut.Location = New System.Drawing.Point(4, 477)
+        Me.btnLogOut.Name = "btnLogOut"
+        Me.btnLogOut.Size = New System.Drawing.Size(193, 44)
+        Me.btnLogOut.TabIndex = 6
+        Me.btnLogOut.Text = "Đăng xuất"
+        Me.btnLogOut.UseVisualStyleBackColor = False
+        '
         'MainForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
@@ -128,4 +142,5 @@ Partial Class MainForm
     Friend WithEvents btnMaintenanceRequestTab As Button
     Friend WithEvents btnApartmentTab As Button
     Friend WithEvents lblUserName As Label
+    Friend WithEvents btnLogOut As Button
 End Class

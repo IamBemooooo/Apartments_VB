@@ -39,7 +39,6 @@
                 Dim mainForm As New MainForm(user)
                 Me.Hide()
                 mainForm.ShowDialog()
-                Me.Close()
             Else
                 MessageBox.Show("Tài khoản hoặc mật khẩu không đúng.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If

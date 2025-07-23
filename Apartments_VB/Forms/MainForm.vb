@@ -73,4 +73,13 @@
 
         LoadControl(detailControl)
     End Sub
+
+    Private Sub btnLogOut_Click(sender As Object, e As EventArgs) Handles btnLogOut.Click
+        ' Mở lại LoginForm
+        Dim loginForm As New LoginForm(ServiceProviderLocator.UserService)
+        loginForm.Show()
+
+        ' Ẩn MainForm thay vì đóng
+        Me.Hide()
+    End Sub
 End Class
