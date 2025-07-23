@@ -86,23 +86,24 @@ Public Class MaintenanceRequestRepository
         Dim result As MaintenanceRequestDto = Nothing
         Using conn As New OdbcConnection(_connectionString)
             conn.Open()
-            Dim query As String = "" &
-                "SELECT mr.Id, a.Name AS ApartmentName, mr.RequestDate, mr.Description, mr.Status " &
-                "FROM MaintenanceRequest mr " &
-                "JOIN Apartment a ON mr.ApartmentId = a.Id " &
-                "WHERE mr.Id = ?"
+
+            ' NHÉT TRỰC TIẾP `id` VÀO CHUỖI SQL — CẨN THẬN SQL INJECTION
+            Dim query As String = "
+            SELECT mr.Id, a.ApartmentName, mr.RequestDate, mr.Description, mr.Status
+            FROM MaintenanceRequest mr
+            JOIN Apartment a ON mr.ApartmentId = a.Id
+            WHERE mr.Id = " & id
 
             Using cmd As New OdbcCommand(query, conn)
-                cmd.Parameters.AddWithValue("@id", id)
                 Using reader As OdbcDataReader = cmd.ExecuteReader()
                     If reader.Read() Then
                         result = New MaintenanceRequestDto With {
-                            .Id = Convert.ToInt32(reader("Id")),
-                            .ApartmentName = reader("ApartmentName").ToString(),
-                            .RequestDate = Convert.ToDateTime(reader("RequestDate")),
-                            .Description = reader("Description").ToString(),
-                            .Status = reader("Status").ToString()
-                        }
+                        .Id = Convert.ToInt32(reader("Id")),
+                        .ApartmentName = reader("ApartmentName").ToString(),
+                        .RequestDate = Convert.ToDateTime(reader("RequestDate")),
+                        .Description = reader("Description").ToString(),
+                        .StatusId = Convert.ToInt32(reader("Status"))
+                    }
                     End If
                 End Using
             End Using
@@ -167,7 +168,7 @@ Public Class MaintenanceRequestRepository
 
             ' Truy vấn bản ghi vừa cập nhật kèm ApartmentName
             Dim selectQuery As String = "" &
-                "SELECT mr.Id, a.Name AS ApartmentName, mr.RequestDate, mr.Description, mr.Status " &
+                "SELECT mr.Id, a.ApartmentName, mr.RequestDate, mr.Description, mr.Status " &
                 "FROM MaintenanceRequest mr " &
                 "JOIN Apartment a ON mr.ApartmentId = a.Id " &
                 "WHERE mr.Id = ?"

@@ -4,4 +4,5 @@
     Public Property RequestDate As DateTime
     Public Property Description As String
     Public Property Status As String
+    Public Property StatusId As Integer
 End Class

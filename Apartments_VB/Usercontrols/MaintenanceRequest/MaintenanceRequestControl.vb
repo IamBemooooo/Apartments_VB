@@ -1,4 +1,7 @@
-﻿Public Class MaintenanceRequestControl
+﻿Imports ClosedXML.Excel
+Imports System.IO
+
+Public Class MaintenanceRequestControl
 
     Private ReadOnly _service As IMaintenanceRequestService
     Private ReadOnly _apartmentService As IApartmentService
@@ -60,6 +63,7 @@
             Case 0 : Return "Chờ xử lý"
             Case 1 : Return "Đang xử lý"
             Case 2 : Return "Hoàn thành"
+            Case 3 : Return "Từ chối"
             Case Else : Return "Không xác định"
         End Select
     End Function
@@ -120,5 +124,122 @@
         form.ShowDialog()
 
         LoadData()
+    End Sub
+
+    Private Sub btnUpdate_Click(sender As Object, e As EventArgs) Handles btnUpdate.Click
+        If dgvRequests.CurrentRow Is Nothing Then
+            MessageBox.Show("Vui lòng chọn một yêu cầu cần cập nhật.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Return
+        End If
+
+        ' Lấy ID từ dòng đang chọn
+        Dim selectedId As Integer = Convert.ToInt32(dgvRequests.CurrentRow.Cells("Id").Value)
+
+        ' Lấy chi tiết yêu cầu từ service
+        Dim request = _service.GetById(selectedId)
+        If request Is Nothing Then
+            MessageBox.Show("Không tìm thấy yêu cầu bảo trì này.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return
+        End If
+
+        ' Hiển thị form cập nhật
+        Dim form As New MaintenanceRequestUpdateForm(_service, request, _currentUser)
+        form.ShowDialog()
+
+        ' Reload lại dữ liệu sau khi đóng form
+        LoadData()
+    End Sub
+
+    Private Sub btnExport_Click(sender As Object, e As EventArgs) Handles btnExport.Click
+        Try
+            ' Lấy điều kiện lọc hiện tại
+            Dim status As Integer = -1
+            If cbxStatus.SelectedValue IsNot Nothing Then
+                status = Convert.ToInt32(cbxStatus.SelectedValue)
+            End If
+
+            Dim apartmentId As Integer = -1
+            If cbxApartment.SelectedValue IsNot Nothing Then
+                apartmentId = Convert.ToInt32(cbxApartment.SelectedValue)
+            End If
+
+            ' Lấy toàn bộ dữ liệu phù hợp (không phân trang)
+            Dim list = _service.GetPagedList(1, Integer.MaxValue, status, apartmentId)
+            If list Is Nothing OrElse list.Count = 0 Then
+                MessageBox.Show("Không có dữ liệu để xuất.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Return
+            End If
+
+            ' Tạo file Excel
+            Dim wb As New XLWorkbook()
+            Dim ws = wb.Worksheets.Add("YêuCầuBảoTrì")
+
+            ' Ghi phần tiêu đề lọc
+            Dim filterTitle As String = $"BỘ LỌC: "
+            If status = -1 Then
+                filterTitle &= "Trạng thái: Tất cả; "
+            Else
+                filterTitle &= $"Trạng thái: {GetStatusString(status)}; "
+            End If
+
+            If apartmentId = -1 Then
+                filterTitle &= "Căn hộ: Tất cả"
+            Else
+                Dim selectedApartment = cbxApartment.Text
+                filterTitle &= $"Căn hộ: {selectedApartment}"
+            End If
+
+            ws.Cell("A1").Value = filterTitle
+            ws.Range("A1:E1").Merge().Style.Font.SetBold().Font.FontSize = 12
+            ws.Row(1).Height = 20
+
+            ' Ghi tiêu đề cột
+            ws.Cell("A2").Value = "ID"
+            ws.Cell("B2").Value = "Căn hộ"
+            ws.Cell("C2").Value = "Mô tả"
+            ws.Cell("D2").Value = "Ngày yêu cầu"
+            ws.Cell("E2").Value = "Trạng thái"
+
+            ws.Range("A2:E2").Style.Font.SetBold().Fill.SetBackgroundColor(XLColor.LightGray)
+
+            ' Ghi dữ liệu
+            Dim row = 3
+            For Each r In list
+                ws.Cell(row, 1).Value = r.Id
+                ws.Cell(row, 2).Value = r.ApartmentName
+                ws.Cell(row, 3).Value = r.Description
+                ws.Cell(row, 4).Value = r.RequestDate.ToString("dd/MM/yyyy HH:mm")
+                ws.Cell(row, 5).Value = GetStatusString(r.Status)
+                row += 1
+            Next
+
+            ' Căn chỉnh và thêm viền
+            Dim dataRange = ws.Range("A2:E" & (row - 1))
+            dataRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin
+            dataRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin
+            dataRange.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center
+            dataRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left
+
+            ws.Columns().AdjustToContents()
+
+            ' Tạo tên file với thời gian thực
+            Dim now = DateTime.Now
+            Dim timestamp = now.ToString("yyyy-MM-dd_HH-mm")
+            Dim defaultFileName = $"YeuCauBaoTri_{timestamp}.xlsx"
+
+            ' Chọn nơi lưu file
+            Dim sfd As New SaveFileDialog With {
+            .Filter = "Excel Workbook|*.xlsx",
+            .FileName = defaultFileName
+        }
+
+            If sfd.ShowDialog() = DialogResult.OK Then
+                wb.SaveAs(sfd.FileName)
+                MessageBox.Show("Xuất Excel thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            End If
+
+        Catch ex As Exception
+            MessageBox.Show("Lỗi khi xuất Excel: " & ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 End Class

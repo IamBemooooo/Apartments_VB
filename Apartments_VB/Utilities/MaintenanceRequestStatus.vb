@@ -16,4 +16,8 @@ Public Enum MaintenanceRequestStatus
     ''' Yêu cầu đã hoàn thành
     ''' </summary>
     Completed = 2
+    ''' <summary>
+    ''' Yêu cầu đã bị hủy
+    ''' </summary>
+    Rejected = 3
 End Enum

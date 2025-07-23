@@ -152,6 +152,12 @@
     <Compile Include="Forms\MaintenanceRquest\MaintenanceRequestCreateForm.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\MaintenanceRquest\MaintenanceRequestUpdateForm.Designer.vb">
+      <DependentUpon>MaintenanceRequestUpdateForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MaintenanceRquest\MaintenanceRequestUpdateForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Forms\Resident\ResidentCreateForm.Designer.vb">
       <DependentUpon>ResidentCreateForm.vb</DependentUpon>
     </Compile>
@@ -260,6 +266,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MaintenanceRquest\MaintenanceRequestCreateForm.resx">
       <DependentUpon>MaintenanceRequestCreateForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MaintenanceRquest\MaintenanceRequestUpdateForm.resx">
+      <DependentUpon>MaintenanceRequestUpdateForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Resident\ResidentCreateForm.resx">
       <DependentUpon>ResidentCreateForm.vb</DependentUpon>
