@@ -47,6 +47,7 @@ Partial Class ResidentDetailControl
         Me.Label7 = New System.Windows.Forms.Label()
         Me.cbxStatus = New System.Windows.Forms.ComboBox()
         Me.btnLeft = New System.Windows.Forms.Button()
+        Me.btnBack = New System.Windows.Forms.Button()
         CType(Me.dgvStayHistory, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -294,10 +295,23 @@ Partial Class ResidentDetailControl
         Me.btnLeft.Text = "Rời đi"
         Me.btnLeft.UseVisualStyleBackColor = True
         '
+        'btnBack
+        '
+        Me.btnBack.BackColor = System.Drawing.SystemColors.AppWorkspace
+        Me.btnBack.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnBack.ForeColor = System.Drawing.SystemColors.ButtonHighlight
+        Me.btnBack.Location = New System.Drawing.Point(931, 25)
+        Me.btnBack.Name = "btnBack"
+        Me.btnBack.Size = New System.Drawing.Size(121, 32)
+        Me.btnBack.TabIndex = 51
+        Me.btnBack.Text = "Quay lại"
+        Me.btnBack.UseVisualStyleBackColor = False
+        '
         'ResidentDetailControl
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.Controls.Add(Me.btnBack)
         Me.Controls.Add(Me.btnLeft)
         Me.Controls.Add(Me.cbxStatus)
         Me.Controls.Add(Me.Label7)
@@ -356,4 +370,5 @@ Partial Class ResidentDetailControl
     Friend WithEvents Label7 As Label
     Friend WithEvents cbxStatus As ComboBox
     Friend WithEvents btnLeft As Button
+    Friend WithEvents btnBack As Button
 End Class

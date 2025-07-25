@@ -211,4 +211,10 @@
     Private Sub btnAddResidentToApartment_Click(sender As Object, e As EventArgs) Handles btnAddResidentToApartment.Click
         _LoadControlCallback?.Invoke(New AddResidentToApartment(_residentId, ServiceProviderLocator.ApartmentService, ServiceProviderLocator.ApartmentTypeService, _apartmentResidentService, _LoadControlCallback))
     End Sub
+
+    Private Sub btnBack_Click(sender As Object, e As EventArgs) Handles btnBack.Click
+        If _LoadControlCallback IsNot Nothing Then
+            _LoadControlCallback.Invoke(New ResidentControl(_residentService, _LoadControlCallback))
+        End If
+    End Sub
 End Class

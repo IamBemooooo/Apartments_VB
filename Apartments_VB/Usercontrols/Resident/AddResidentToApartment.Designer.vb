@@ -34,6 +34,7 @@ Partial Class AddResidentToApartment
         Me.btnAdd = New System.Windows.Forms.Button()
         Me.dgvApartments = New System.Windows.Forms.DataGridView()
         Me.Label3 = New System.Windows.Forms.Label()
+        Me.btnBack = New System.Windows.Forms.Button()
         CType(Me.dgvApartments, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -156,10 +157,23 @@ Partial Class AddResidentToApartment
         Me.Label3.TabIndex = 38
         Me.Label3.Text = "Vui lòng chọn căn hộ muốn chuyển vào!"
         '
+        'btnBack
+        '
+        Me.btnBack.BackColor = System.Drawing.SystemColors.AppWorkspace
+        Me.btnBack.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnBack.ForeColor = System.Drawing.SystemColors.ButtonHighlight
+        Me.btnBack.Location = New System.Drawing.Point(930, 6)
+        Me.btnBack.Name = "btnBack"
+        Me.btnBack.Size = New System.Drawing.Size(121, 32)
+        Me.btnBack.TabIndex = 52
+        Me.btnBack.Text = "Quay lại"
+        Me.btnBack.UseVisualStyleBackColor = False
+        '
         'AddResidentToApartment
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.Controls.Add(Me.btnBack)
         Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.btnResetSearch)
         Me.Controls.Add(Me.Label2)
@@ -191,4 +205,5 @@ Partial Class AddResidentToApartment
     Friend WithEvents btnAdd As Button
     Friend WithEvents dgvApartments As DataGridView
     Friend WithEvents Label3 As Label
+    Friend WithEvents btnBack As Button
 End Class

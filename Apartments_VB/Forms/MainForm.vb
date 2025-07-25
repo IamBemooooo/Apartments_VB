@@ -51,7 +51,7 @@
         ' Truyền delegate để ResidentControl gọi ShowResidentDetail
         Dim residentControl As New ResidentControl(
             ServiceProviderLocator.ResidentService,
-            AddressOf ShowResidentDetail
+            AddressOf LoadControl
         )
         LoadControl(residentControl)
         SetActiveTabButton(btnResdidentTab)

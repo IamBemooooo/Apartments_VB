@@ -105,4 +105,10 @@ Public Class AddResidentToApartment
         Dim verifyForm As New VerifyResidence(_residentId, apartmentId, _apartmentResidentService, ServiceProviderLocator.ApartmentTypeService, ServiceProviderLocator.ResidentService, _apartmentService, _LoadControlCallback)
         verifyForm.ShowDialog()
     End Sub
+
+    Private Sub btnBack_Click(sender As Object, e As EventArgs) Handles btnBack.Click
+        If _LoadControlCallback IsNot Nothing Then
+            _LoadControlCallback.Invoke(New ResidentDetailControl(_residentId, ServiceProviderLocator.ResidentService, ServiceProviderLocator.ApartmentResidentService, _LoadControlCallback))
+        End If
+    End Sub
 End Class

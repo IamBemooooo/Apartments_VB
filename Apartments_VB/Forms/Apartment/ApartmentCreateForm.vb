@@ -49,17 +49,13 @@ Public Class ApartmentCreateForm
     ' Khi bấm lưu, lấy dữ liệu từ form và thêm mới căn hộ
     Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
         Try
-
             resetErrorLabels()
 
             Dim result As New ValidationResult()
 
-            ' Lấy dữ liệu từ form
-            Dim name = txtName.Text.Trim()
-            Dim address = txtAddress.Text.Trim()
-            ' Gán lại giá trị đã qua xác thực
-            Dim floorCount = Convert.ToInt32(txtFloorCount.Text.Trim())
-            Dim price = Convert.ToDecimal(txtPrice.Text.Trim())
+            ' 1. Lấy dữ liệu text
+            Dim name As String = txtName.Text.Trim()
+            Dim address As String = txtAddress.Text.Trim()
 
             ' 2. Gọi các hàm kiểm tra từ ValidationHelper
             ValidationHelper.ValidateTextField(result, txtName, "tên căn hộ")
@@ -68,28 +64,34 @@ Public Class ApartmentCreateForm
             ValidationHelper.ValidateDecimalField(result, txtPrice, "giá", True, 0)
             ValidationHelper.ValidateComboBox(result, cbxApartmentType, "loại căn hộ")
 
+            ' 3. Gán lỗi lên giao diện
             lblErrorApartmentName.Text = result.GetErrorByField(txtName.Name)
             lblErrorApartmentType.Text = result.GetErrorByField(cbxApartmentType.Name)
             lblErrorAddress.Text = result.GetErrorByField(txtAddress.Name)
             lblErrorFloorCount.Text = result.GetErrorByField(txtFloorCount.Name)
             lblErrorPrice.Text = result.GetErrorByField(txtPrice.Name)
 
-            ' Nếu có lỗi thì không tiếp tục
+            ' 4. Nếu có lỗi thì dừng lại
             If Not result.IsValid Then Return
 
-            ' Chuẩn bị DTO
+            ' 5. Parse sau khi chắc chắn dữ liệu hợp lệ
+            Dim floorCount As Integer = Convert.ToInt32(txtFloorCount.Text.Trim())
+            Dim price As Decimal = Convert.ToDecimal(txtPrice.Text.Trim())
+            Dim apartmentTypeId As Integer = Convert.ToInt32(cbxApartmentType.SelectedValue)
+
+            ' 6. Tạo DTO
             Dim dto As New ApartmentCreateDto With {
                 .Name = name,
                 .Address = address,
                 .FloorCount = floorCount,
                 .Price = price,
-                .ApartmentTypeId = Convert.ToInt32(cbxApartmentType.SelectedValue)
+                .ApartmentTypeId = apartmentTypeId
             }
 
-            ' Gọi service để thêm mới và nhận lại entity
+            ' 7. Gọi service
             Dim createdApartment = _apartmentService.Add(dto)
 
-            ' Hiển thị thông tin căn hộ vừa thêm
+            ' 8. Thông báo và đóng form
             MessageBox.Show(
                 $"Thêm căn hộ thành công!" & Environment.NewLine &
                 $"Tên: {createdApartment.Name}" & Environment.NewLine &
@@ -97,7 +99,6 @@ Public Class ApartmentCreateForm
                 "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information
             )
 
-            ' Đóng form
             Me.Close()
 
         Catch ex As Exception

@@ -136,6 +136,7 @@ Partial Class ApartmentUpdateForm
         '
         'txtName
         '
+        Me.txtName.Enabled = False
         Me.txtName.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtName.Location = New System.Drawing.Point(152, 27)
         Me.txtName.Name = "txtName"

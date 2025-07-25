@@ -1,14 +1,15 @@
-﻿Imports ClosedXML.Excel
-Imports System.IO
+﻿Imports System.IO
+Imports System.Runtime.Remoting
+Imports ClosedXML.Excel
 
 Public Class ResidentControl
     Private ReadOnly _residentService As IResidentService
-    Private ReadOnly _onDetailRequested As Action(Of Integer)
+    Private ReadOnly _onDetailRequested As Action(Of UserControl)
     Private pageIndex As Integer = 1
     Private ReadOnly pageSize As Integer = 10
     Private totalCount As Integer = 0
 
-    Public Sub New(residentService As IResidentService, onDetailRequested As Action(Of Integer))
+    Public Sub New(residentService As IResidentService, onDetailRequested As Action(Of UserControl))
         InitializeComponent()
         _residentService = residentService
         _onDetailRequested = onDetailRequested
@@ -121,7 +122,97 @@ Public Class ResidentControl
     End Sub
 
     Private Sub btnExport_Click(sender As Object, e As EventArgs) Handles btnExport.Click
+        Try
+            ' 1. Lấy điều kiện lọc hiện tại
+            Dim keyword As String = txtSearch.Text.Trim()
+            Dim isStaying As Nullable(Of Boolean) = Nothing
+            Dim statusText As String = "Tất cả trạng thái"
 
+            If cbxStatus.SelectedIndex = 1 Then
+                isStaying = True
+                statusText = "Đang ở"
+            ElseIf cbxStatus.SelectedIndex = 2 Then
+                isStaying = False
+                statusText = "Đã rời"
+            End If
+
+            ' 2. Lấy toàn bộ danh sách cư dân phù hợp
+            Dim list As List(Of Resident) = _residentService.GetPagedList(keyword, isStaying, 1, Integer.MaxValue)
+            If list Is Nothing OrElse list.Count = 0 Then
+                MessageBox.Show("Không có dữ liệu để xuất.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Return
+            End If
+
+            ' 3. Tạo Excel
+            Dim wb As New XLWorkbook()
+            Dim ws = wb.Worksheets.Add("DanhSachCuDan")
+
+            ' 4. Ghi tiêu đề bộ lọc
+            Dim filterTitle As String = "BỘ LỌC: "
+            If keyword = "" Then
+                filterTitle &= "Từ khóa: Tất cả; "
+            Else
+                filterTitle &= "Từ khóa: " & keyword & "; "
+            End If
+            filterTitle &= "Trạng thái: " & statusText
+
+            ws.Cell("A1").Value = filterTitle
+            ws.Range("A1:F1").Merge()
+            ws.Range("A1:F1").Style.Font.SetBold()
+            ws.Range("A1:F1").Style.Font.FontSize = 12
+            ws.Row(1).Height = 20
+
+            ' 5. Ghi tiêu đề cột
+            ws.Cell("A2").Value = "ID"
+            ws.Cell("B2").Value = "Họ tên"
+            ws.Cell("C2").Value = "SĐT"
+            ws.Cell("D2").Value = "Email"
+            ws.Cell("E2").Value = "Ngày sinh"
+            ws.Cell("F2").Value = "Giới tính"
+            ws.Range("A2:F2").Style.Font.SetBold()
+            ws.Range("A2:F2").Style.Fill.SetBackgroundColor(XLColor.LightGray)
+
+            ' 6. Ghi dữ liệu
+            Dim row As Integer = 3
+            For Each r As Resident In list
+                ws.Cell(row, 1).Value = r.Id
+                ws.Cell(row, 2).Value = r.FullName
+                ws.Cell(row, 3).Value = r.Phone
+                ws.Cell(row, 4).Value = r.Email
+                If r.DateOfBirth.HasValue Then
+                    ws.Cell(row, 5).Value = r.DateOfBirth.Value.ToString("dd/MM/yyyy")
+                Else
+                    ws.Cell(row, 5).Value = "Không rõ"
+                End If
+                ws.Cell(row, 6).Value = If(r.Gender = 0, "Nữ", "Nam")
+                row += 1
+            Next
+
+            ' 7. Định dạng bảng
+            Dim dataRange = ws.Range("A2:F" & (row - 1).ToString())
+            dataRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin
+            dataRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin
+            dataRange.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center
+            dataRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left
+            ws.Columns().AdjustToContents()
+
+            ' 8. Tạo tên file mặc định
+            Dim timestamp As String = DateTime.Now.ToString("yyyy-MM-dd_HH-mm")
+            Dim defaultFileName As String = "DanhSachCuDan_" & timestamp & ".xlsx"
+
+            ' 9. Dialog lưu file
+            Dim sfd As New SaveFileDialog()
+            sfd.Filter = "Excel Workbook|*.xlsx"
+            sfd.FileName = defaultFileName
+
+            If sfd.ShowDialog() = DialogResult.OK Then
+                wb.SaveAs(sfd.FileName)
+                MessageBox.Show("Xuất Excel thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            End If
+
+        Catch ex As Exception
+            MessageBox.Show("Lỗi khi xuất Excel: " & ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 
     Private Sub btnDetail_Click(sender As Object, e As EventArgs) Handles btnDetail.Click
@@ -133,9 +224,6 @@ Public Class ResidentControl
         Dim selectedRow As DataGridViewRow = dgvResidents.SelectedRows(0)
         Dim residentId As Integer = Convert.ToInt32(selectedRow.Cells("Id").Value)
 
-        ' Gọi callback được truyền từ MainForm
-        If _onDetailRequested IsNot Nothing Then
-            _onDetailRequested(residentId)
-        End If
+        _onDetailRequested.Invoke(New ResidentDetailControl(residentId, _residentService, ServiceProviderLocator.ApartmentResidentService, _onDetailRequested))
     End Sub
 End Class
