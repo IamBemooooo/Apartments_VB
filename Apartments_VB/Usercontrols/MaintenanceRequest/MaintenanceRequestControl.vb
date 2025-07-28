@@ -92,7 +92,8 @@ Public Class MaintenanceRequestControl
             New ComboItem("Tất cả", -1),
             New ComboItem("Chờ xử lý", 0),
             New ComboItem("Đang xử lý", 1),
-            New ComboItem("Hoàn thành", 2)
+            New ComboItem("Hoàn thành", 2),
+            New ComboItem("Từ chối", 3)
         }
         cbxStatus.DisplayMember = "Text"
         cbxStatus.ValueMember = "Value"
@@ -241,5 +242,31 @@ Public Class MaintenanceRequestControl
         Catch ex As Exception
             MessageBox.Show("Lỗi khi xuất Excel: " & ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
+    End Sub
+
+    Private Sub btnResetSearch_Click(sender As Object, e As EventArgs) Handles btnResetSearch.Click
+        Try
+            ' Xóa ô tìm kiếm nếu có (nếu có textbox tìm kiếm)
+            ' Nếu không có thì bỏ qua dòng này
+            ' txtSearch.Text = ""
+
+            ' Reset ComboBox trạng thái về "Tất cả"
+            cbxStatus.SelectedIndex = 0
+
+            ' Reset ComboBox căn hộ về "Tất cả"
+            cbxApartment.SelectedIndex = 0
+
+            ' Reset trang
+            pageIndex = 1
+
+            ' Tải lại dữ liệu đầy đủ
+            LoadData()
+        Catch ex As Exception
+            MessageBox.Show("Lỗi khi reset tìm kiếm: " & ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Sub cbxStatus_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbxStatus.SelectedIndexChanged
+
     End Sub
 End Class
